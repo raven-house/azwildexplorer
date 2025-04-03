@@ -11,7 +11,7 @@ import {
   TableCell,
   Table,
 } from '@/components/ui/table'
-import { shortenTxnHash } from '@/lib/utils'
+import { formatTime, parseTimeToSeconds, shortenTxnHash } from '@/lib/utils'
 import { ArrowRight, Bell, Box, Code, Layout, MessageSquare } from 'lucide-react'
 import Link from 'next/link'
 
@@ -20,43 +20,43 @@ const INITIAL_TRANSACTION_DATA = [
     txnHash: '0x0838f46715219fc857bd5da73170ab1e9e869850a0f7578e7565c6eb8017973d',
     txnStatus: 'Paid',
     txnType: 'INVOKE_FUNCTION',
-    age: '12s',
+    age: '12s ago',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da731708jy88s869850a0f7578e7565c6eb801797cd',
     txnStatus: 'Pending',
     txnType: 'INVOKE_FUNCTION',
-    age: '24s',
+    age: '24s ago',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da731708jh7js869850a0f7578e7565c6eb8017979kj',
     txnStatus: 'Unpaid',
     txnType: 'INVOKE_FUNCTION',
-    age: '36s',
+    age: '36s ago',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da731708jhuujj69850a0f7578e7565c6eb801797ik',
     txnStatus: 'Paid',
     txnType: 'INVOKE_FUNCTION',
-    age: '48s',
+    age: '48s ago',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da73170ssss8s869850a0f7578e7565c6eb801794df',
     txnStatus: 'Paid',
     txnType: 'INVOKE_FUNCTION',
-    age: '60s',
+    age: '1m ago',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da731708jsdjs869850a0f7578e7565c6eb8017972s',
     txnStatus: 'Pending',
     txnType: 'INVOKE_FUNCTION',
-    age: '72s',
+    age: '1m ago',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da731708jh7js8698508hfr6h78e765c6eb801797xs',
     txnStatus: 'Unpaid',
     txnType: 'INVOKE_FUNCTION',
-    age: '84s',
+    age: '1m ago',
   },
 ]
 
@@ -172,7 +172,7 @@ export default function Home() {
         txnHash: generateRandomTxnHash(),
         txnStatus: getRandomStatus(),
         txnType: getRandomTxnType(),
-        age: '0s',
+        age: '0s ago',
       }
 
       setTransactions((prevTransactions) => {
@@ -190,10 +190,11 @@ export default function Home() {
     const ageInterval = setInterval(() => {
       setTransactions((prevTransactions) =>
         prevTransactions.map((txn) => {
-          const currentAge = parseInt(txn.age)
+          const currentAgeInSeconds = parseTimeToSeconds(txn.age)
+          const newAgeInSeconds = isNaN(currentAgeInSeconds) ? 1 : currentAgeInSeconds + 1
           return {
             ...txn,
-            age: isNaN(currentAge) ? '1s' : `${currentAge + 1}s`,
+            age: formatTime(newAgeInSeconds),
           }
         })
       )
@@ -255,7 +256,12 @@ export default function Home() {
                 }
               >
                 <TableCell className="font-medium">
-                  <Link href="/txn-detail">{shortenTxnHash(txn.txnHash)}</Link>
+                  <Link
+                    href="/txn-detail"
+                    className="text-primary underline hover:no-underline"
+                  >
+                    {shortenTxnHash(txn.txnHash)}
+                  </Link>
                 </TableCell>
                 <TableCell>{txn.txnType}</TableCell>
                 <TableCell>{txn.txnStatus}</TableCell>
