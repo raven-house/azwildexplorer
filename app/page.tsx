@@ -14,6 +14,7 @@ import {
 import { formatTime, parseTimeToSeconds, shortenTxnHash } from '@/lib/utils'
 import { ArrowRight, Bell, Box, Code, Layout, MessageSquare } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { useRouter } from 'next/navigation'
 
 const PRIVACY_LINKS = [
   { text: 'Ever heard of GDPR?', url: 'https://gdpr-info.eu/' },
@@ -207,6 +208,7 @@ export default function Home() {
   const [selectedMessage, setSelectedMessage] = useState('')
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [transactionHashes, setTransactionHashes] = useState<Transaction[]>([])
+  const router = useRouter()
 
   useEffect(() => {
     const getRandomInterval = () => Math.floor(Math.random() * (30000 - 15000 + 1)) + 15000
@@ -263,7 +265,7 @@ export default function Home() {
     const choice = Math.floor(Math.random() * 3)
 
     if (choice === 0) {
-      //TODO: change the route to the new page
+      router.push('/txn-detail')
     } else if (choice === 1) {
       const randomIndex = Math.floor(Math.random() * PRIVACY_LINKS.length)
       window.open(PRIVACY_LINKS[randomIndex].url, '_blank')
