@@ -6,7 +6,7 @@ import { Search } from 'lucide-react'
 export function Header() {
   return (
     <header className="border-b border-b-primary/10 bg-background">
-      <div className="container flex h-16 items-center gap-8 px-4 mx-auto">
+      <div className="flex h-16 items-center gap-8 px-4">
         <Link
           href="/"
           className="flex items-center gap-2"
