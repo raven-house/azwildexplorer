@@ -13,7 +13,33 @@ import {
 } from '@/components/ui/table'
 import { formatTime, parseTimeToSeconds, shortenTxnHash } from '@/lib/utils'
 import { ArrowRight, Bell, Box, Code, Layout, MessageSquare } from 'lucide-react'
-import Link from 'next/link'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+
+const PRIVACY_LINKS = [
+  { text: 'Ever heard of GDPR?', url: 'https://gdpr-info.eu/' },
+  {
+    text: 'Constitutional rights for privacy',
+    url: 'https://fra.europa.eu/en/law-reference/european-convention-human-rights-article-8-0',
+  },
+  {
+    text: 'Request for Information Act',
+    url: 'https://www.justice.gov/oip/freedom-information-act-5-usc-552',
+  },
+  { text: 'Aztec Merch Store', url: 'https://store.aztec.network/' },
+]
+
+const RICK_ROLL_WORDS = [
+  'Never',
+  'gonna',
+  'give',
+  'you',
+  'up',
+  'never',
+  'gonna',
+  'let',
+  'you',
+  'down',
+]
 
 const INITIAL_TRANSACTION_DATA = [
   {
@@ -135,7 +161,9 @@ const DASHBOARD_DATA = [
   },
 ]
 
-const generateRandomTxnHash = () => {
+type Transaction = { hash: string; revealed: boolean }
+
+const generateRandomTxnHash = (): string => {
   let result = '0x'
   const characters = '0123456789abcdefghijklmnopqrstuvwxyz'
   const length = 64
@@ -145,6 +173,18 @@ const generateRandomTxnHash = () => {
   }
 
   return result
+}
+
+const generateRandomHashes = (count: number): Transaction[] => {
+  const hashes = [{ hash: '', revealed: false }]
+  for (let i = 0; i < count; i++) {
+    hashes.push({
+      hash: generateRandomTxnHash(),
+      revealed: false,
+    })
+  }
+  console.log('HASHES', hashes)
+  return hashes
 }
 
 const getRandomStatus = () => {
@@ -163,6 +203,10 @@ export default function Home() {
     parseInt(DASHBOARD_DATA[1].value.replace(/,/g, ''))
   )
   const [counter, setCounter] = useState(0)
+
+  const [selectedMessage, setSelectedMessage] = useState('')
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [transactionHashes, setTransactionHashes] = useState<Transaction[]>([])
 
   useEffect(() => {
     const getRandomInterval = () => Math.floor(Math.random() * (30000 - 15000 + 1)) + 15000
@@ -215,6 +259,27 @@ export default function Home() {
     return item
   })
 
+  const handleRevealClick = () => {
+    const choice = Math.floor(Math.random() * 3)
+
+    if (choice === 0) {
+      //TODO: change the route to the new page
+    } else if (choice === 1) {
+      const randomIndex = Math.floor(Math.random() * PRIVACY_LINKS.length)
+      window.open(PRIVACY_LINKS[randomIndex].url, '_blank')
+    } else {
+      const randomHashes = generateRandomHashes(6)
+      setTransactionHashes(randomHashes)
+      setIsDialogOpen(true)
+    }
+  }
+
+  const revealHash = (index: number) => {
+    setTransactionHashes((prevHashes) =>
+      prevHashes.map((hash, i) => (i === index ? { ...hash, revealed: true } : hash))
+    )
+  }
+
   return (
     <main className="pt-20 flex flex-col gap-20">
       <section>
@@ -256,29 +321,83 @@ export default function Home() {
                 }
               >
                 <TableCell className="font-medium">
-                  <Link
-                    href="/txn-detail"
-                    className="text-primary underline hover:no-underline"
-                  >
+                  <span className="text-primary underline hover:no-underline cursor-pointer">
                     {shortenTxnHash(txn.txnHash)}
-                  </Link>
+                  </span>
                 </TableCell>
                 <TableCell>{txn.txnType}</TableCell>
                 <TableCell>{txn.txnStatus}</TableCell>
                 <TableCell>{txn.age}</TableCell>
                 <TableCell className="text-right">
-                  <Link
-                    href="/txn-detail"
-                    className="underline"
+                  <Button
+                    size="sm"
+                    onClick={handleRevealClick}
                   >
-                    <Button size="sm">Reveal</Button>
-                  </Link>
+                    Reveal
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </section>
+
+      <Dialog
+        open={isDialogOpen && !!selectedMessage}
+        onOpenChange={(open) => {
+          if (!open) {
+            setIsDialogOpen(false)
+            setSelectedMessage('')
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Transaction Information</DialogTitle>
+          </DialogHeader>
+          <div className="p-4 text-center">
+            <p className="text-lg font-semibold text-primary">{selectedMessage}</p>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={isDialogOpen && transactionHashes.length > 0}
+        onOpenChange={(open) => {
+          if (!open) {
+            setIsDialogOpen(false)
+            setTransactionHashes([])
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Transaction Hashes</DialogTitle>
+          </DialogHeader>
+          <div className="grid">
+            {transactionHashes.map((hash, index) => (
+              <div
+                key={index}
+                className="flex justify-between items-center border-b border-primary/30 p-3"
+              >
+                <code className="font-mono text-xs md:text-sm overflow-hidden text-ellipsis">
+                  {hash.revealed
+                    ? RICK_ROLL_WORDS[index % RICK_ROLL_WORDS.length]
+                    : shortenTxnHash(hash.hash)}
+                </code>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => revealHash(index)}
+                  disabled={hash.revealed}
+                >
+                  {hash.revealed ? 'Revealed' : 'Reveal'}
+                </Button>
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </main>
   )
 }

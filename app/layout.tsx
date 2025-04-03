@@ -23,10 +23,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       suppressHydrationWarning
     >
       <body
-        className={`${ibmPlexSans.variable} font-sans antialiased min-h-screen bg-background text-foreground container mx-auto`}
+        className={`${ibmPlexSans.variable} font-sans antialiased min-h-screen bg-background text-foreground `}
       >
-        <Header />
-        {children}
+        <div className="container mx-auto">
+          <Header />
+          {children}
+        </div>
       </body>
     </html>
   )
