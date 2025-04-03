@@ -1,15 +1,13 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { IBM_Plex_Sans } from 'next/font/google'
 import './globals.css'
+import { Header } from '@/components/Header'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const ibmPlexSans = IBM_Plex_Sans({
   subsets: ['latin'],
-})
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-sans',
 })
 
 export const metadata: Metadata = {
@@ -20,8 +18,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+    <html
+      lang="en"
+      suppressHydrationWarning
+    >
+      <body className={`${ibmPlexSans.variable} font-sans antialiased min-h-screen bg-background`}>
+        <Header />
+        {children}
+      </body>
     </html>
   )
 }
