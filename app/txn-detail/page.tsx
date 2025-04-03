@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Sparkles, Laugh, AlertTriangle, Lock, Search } from 'lucide-react'
+import { Sparkles, Laugh, AlertTriangle, Lock, Search, RefreshCwIcon } from 'lucide-react'
 import Link from 'next/link'
 
 const PRIVACY_MESSAGES = [
@@ -47,13 +47,19 @@ const getRandomIcon = () => {
 }
 
 export default function TxnDetail() {
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState(
+    () => PRIVACY_MESSAGES[Math.floor(Math.random() * PRIVACY_MESSAGES.length)]
+  )
   const [mounted, setMounted] = useState(false)
+  const [icon, setIcon] = useState(() => getRandomIcon())
+
+  const updateMessage = () => {
+    setMessage(PRIVACY_MESSAGES[Math.floor(Math.random() * PRIVACY_MESSAGES.length)])
+    setIcon(getRandomIcon())
+  }
 
   useEffect(() => {
     setMounted(true)
-    const randomIndex = Math.floor(Math.random() * PRIVACY_MESSAGES.length)
-    setMessage(PRIVACY_MESSAGES[randomIndex])
   }, [])
 
   if (!mounted) {
@@ -61,12 +67,12 @@ export default function TxnDetail() {
   }
 
   return (
-    <div className="flex items-center justify-center p-4  mt-20">
+    <div className="flex items-center justify-center p-4 mt-20">
       <div className="max-w-md w-full">
         <Card className="shadow-lg">
           <CardContent className="p-6">
             <div className="flex items-center gap-2 mb-4">
-              {getRandomIcon()}
+              {icon}
               <h2 className="text-xl font-bold text-primary">Transaction Details</h2>
             </div>
 
@@ -83,7 +89,13 @@ export default function TxnDetail() {
               </motion.div>
             </AnimatePresence>
 
-            <div className="flex justify-center">
+            <div className="flex justify-center gap-3 text-foreground">
+              <Button
+                onClick={updateMessage}
+                variant="outline"
+              >
+                Try Again <RefreshCwIcon />
+              </Button>
               <Link href="/">
                 <Button>
                   <span>Go Back</span>
