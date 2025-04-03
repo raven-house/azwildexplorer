@@ -1,3 +1,6 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -12,41 +15,48 @@ import { shortenTxnHash } from '@/lib/utils'
 import { ArrowRight, Bell, Box, Code, Layout, MessageSquare } from 'lucide-react'
 import Link from 'next/link'
 
-const TRANSACTION_MOCK_DATA = [
+const INITIAL_TRANSACTION_DATA = [
   {
     txnHash: '0x0838f46715219fc857bd5da73170ab1e9e869850a0f7578e7565c6eb8017973d',
     txnStatus: 'Paid',
     txnType: 'INVOKE_FUNCTION',
+    age: '12s',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da731708jy88s869850a0f7578e7565c6eb801797cd',
     txnStatus: 'Pending',
     txnType: 'INVOKE_FUNCTION',
+    age: '24s',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da731708jh7js869850a0f7578e7565c6eb8017979kj',
     txnStatus: 'Unpaid',
     txnType: 'INVOKE_FUNCTION',
+    age: '36s',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da731708jhuujj69850a0f7578e7565c6eb801797ik',
     txnStatus: 'Paid',
     txnType: 'INVOKE_FUNCTION',
+    age: '48s',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da73170ssss8s869850a0f7578e7565c6eb801794df',
     txnStatus: 'Paid',
     txnType: 'INVOKE_FUNCTION',
+    age: '60s',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da731708jsdjs869850a0f7578e7565c6eb8017972s',
     txnStatus: 'Pending',
     txnType: 'INVOKE_FUNCTION',
+    age: '72s',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da731708jh7js8698508hfr6h78e765c6eb801797xs',
     txnStatus: 'Unpaid',
     txnType: 'INVOKE_FUNCTION',
+    age: '84s',
   },
 ]
 
@@ -125,12 +135,90 @@ const DASHBOARD_DATA = [
   },
 ]
 
+const generateRandomTxnHash = () => {
+  let result = '0x'
+  const characters = '0123456789abcdefghijklmnopqrstuvwxyz'
+  const length = 64
+
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length))
+  }
+
+  return result
+}
+
+const getRandomStatus = () => {
+  const statuses = ['Paid', 'Pending', 'Unpaid']
+  return statuses[Math.floor(Math.random() * statuses.length)]
+}
+
+const getRandomTxnType = () => {
+  const types = ['INVOKE_FUNCTION', 'DEPLOY', 'TRANSFER', 'APPROVE', 'SWAP']
+  return types[Math.floor(Math.random() * types.length)]
+}
+
 export default function Home() {
+  const [transactions, setTransactions] = useState(INITIAL_TRANSACTION_DATA)
+  const [transactionCount, setTransactionCount] = useState(
+    parseInt(DASHBOARD_DATA[1].value.replace(/,/g, ''))
+  )
+  const [counter, setCounter] = useState(0)
+
+  useEffect(() => {
+    const getRandomInterval = () => Math.floor(Math.random() * (30000 - 15000 + 1)) + 15000
+
+    const addNewTransaction = () => {
+      const newTransaction = {
+        txnHash: generateRandomTxnHash(),
+        txnStatus: getRandomStatus(),
+        txnType: getRandomTxnType(),
+        age: '0s',
+      }
+
+      setTransactions((prevTransactions) => {
+        const updatedTransactions = [newTransaction, ...prevTransactions]
+        return updatedTransactions.slice(0, 7)
+      })
+
+      setTransactionCount((prevCount) => prevCount + 1)
+      setCounter((prevCounter) => prevCounter + 1)
+      setTimeout(addNewTransaction, getRandomInterval())
+    }
+
+    const initialTimeout = setTimeout(addNewTransaction, getRandomInterval())
+
+    const ageInterval = setInterval(() => {
+      setTransactions((prevTransactions) =>
+        prevTransactions.map((txn) => {
+          const currentAge = parseInt(txn.age)
+          return {
+            ...txn,
+            age: isNaN(currentAge) ? '1s' : `${currentAge + 1}s`,
+          }
+        })
+      )
+    }, 1000)
+
+    return () => {
+      clearTimeout(initialTimeout)
+      clearInterval(ageInterval)
+    }
+  }, [])
+
+  const formattedTransactionCount = transactionCount.toLocaleString()
+
+  const updatedDashboardData = DASHBOARD_DATA.map((item) => {
+    if (item.id === '2') {
+      return { ...item, value: formattedTransactionCount }
+    }
+    return item
+  })
+
   return (
     <main className="pt-20 flex flex-col gap-20">
       <section>
         <div className="grid grid-cols-3 gap-3">
-          {DASHBOARD_DATA.map((data) => {
+          {updatedDashboardData.map((data) => {
             return (
               <Card key={data.id}>
                 <div className="flex items-center px-6">
@@ -159,14 +247,19 @@ export default function Home() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {TRANSACTION_MOCK_DATA.map((txn) => (
-              <TableRow key={txn.txnHash}>
+            {transactions.map((txn) => (
+              <TableRow
+                key={txn.txnHash}
+                className={
+                  counter > 0 && txn === transactions[0] ? 'bg-primary/20 animate-pulse' : ''
+                }
+              >
                 <TableCell className="font-medium">
                   <Link href="/txn-detail">{shortenTxnHash(txn.txnHash)}</Link>
                 </TableCell>
                 <TableCell>{txn.txnType}</TableCell>
                 <TableCell>{txn.txnStatus}</TableCell>
-                <TableCell>12</TableCell>
+                <TableCell>{txn.age}</TableCell>
                 <TableCell className="text-right">
                   <Link
                     href="/txn-detail"
