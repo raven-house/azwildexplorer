@@ -13,7 +13,13 @@ import {
 } from '@/components/ui/table'
 import { formatTime, parseTimeToSeconds, shortenTxnHash } from '@/lib/utils'
 import { ArrowRight, Bell, Box, Code, Layout, MessageSquare } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { useRouter } from 'next/navigation'
 
 const PRIVACY_LINKS = [
@@ -191,14 +197,14 @@ const generateRandomTxnHash = (): string => {
 }
 
 const generateRandomHashes = (count: number): Transaction[] => {
-  const hashes = [{ hash: '', revealed: false }]
+  const hashes = []
   for (let i = 0; i < count; i++) {
+    const randomHash = generateRandomTxnHash()
     hashes.push({
-      hash: generateRandomTxnHash(),
+      hash: randomHash,
       revealed: false,
     })
   }
-  console.log('HASHES', hashes)
   return hashes
 }
 
@@ -445,6 +451,7 @@ export default function Home() {
           <DialogHeader>
             <DialogTitle>Transaction Hashes</DialogTitle>
           </DialogHeader>
+          <DialogDescription></DialogDescription>
           <div className="grid">
             {transactionHashes.map((hash, index) => (
               <div
