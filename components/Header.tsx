@@ -26,25 +26,25 @@ export function Header() {
 
         <nav className="flex items-center gap-6">
           <Link
-            href="/blockchain"
+            href="/"
             className="text-foreground hover:text-primary transition-colors font-medium"
           >
             Blockchain
           </Link>
           <Link
-            href="/code"
+            href="/"
             className="text-foreground hover:text-primary transition-colors font-medium"
           >
             Code
           </Link>
           <Link
-            href="/data"
+            href="/"
             className="text-foreground hover:text-primary transition-colors font-medium"
           >
             Data
           </Link>
           <Link
-            href="/developer"
+            href="/"
             className="text-foreground hover:text-primary transition-colors font-medium"
           >
             Developer
