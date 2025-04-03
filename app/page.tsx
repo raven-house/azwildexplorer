@@ -286,17 +286,22 @@ export default function Home() {
   }
 
   return (
-    <main className="pt-20 flex flex-col gap-20">
+    <main className="pt-6 md:pt-10 lg:pt-16 pb-10 flex flex-col gap-8 md:gap-12 lg:gap-16 px-4 md:px-6 lg:px-8">
       <section>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid  grid-cols-2 xl:grid-cols-3 gap-3">
           {dashboardData.map((data) => {
             return (
-              <Card key={data.id}>
-                <div className="flex items-center px-6">
+              <Card
+                key={data.id}
+                className="transition-all hover:shadow-md"
+              >
+                <div className="flex items-center px-3 md:px-6">
                   <div>{data.icon}</div>
-                  <CardHeader>
-                    <CardTitle>{data.heading}</CardTitle>
-                    <CardDescription className="text-2xl">{data.formattedValue}</CardDescription>
+                  <CardHeader className="p-3 md:p-4">
+                    <CardTitle className="text-sm md:text-lg">{data.heading}</CardTitle>
+                    <CardDescription className="text-lg md:text-2xl">
+                      {data.formattedValue}
+                    </CardDescription>
                   </CardHeader>
                 </div>
               </Card>
@@ -306,45 +311,48 @@ export default function Home() {
       </section>
 
       <section>
-        <h2 className="text-primary font-bold mb-4">Latest Transactions</h2>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Transaction Hash</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Age</TableHead>
-              <TableHead className="text-right">Action</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {transactions.map((txn) => (
-              <TableRow
-                key={txn.txnHash}
-                className={
-                  counter > 0 && txn === transactions[0] ? 'bg-primary/20 animate-pulse' : ''
-                }
-              >
-                <TableCell className="font-medium">
-                  <span className="text-primary underline hover:no-underline cursor-pointer">
-                    {shortenTxnHash(txn.txnHash)}
-                  </span>
-                </TableCell>
-                <TableCell>{txn.txnType}</TableCell>
-                <TableCell>{txn.txnStatus}</TableCell>
-                <TableCell>{txn.age}</TableCell>
-                <TableCell className="text-right">
-                  <Button
-                    size="sm"
-                    onClick={handleRevealClick}
-                  >
-                    Reveal
-                  </Button>
-                </TableCell>
+        <h2 className="text-primary font-bold mb-4 text-lg md:text-xl">Latest Transactions</h2>
+        <div className="overflow-x-auto -mx-4 px-4">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">Transaction Hash</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Age</TableHead>
+                <TableHead className="text-right">Action</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {transactions.map((txn) => (
+                <TableRow
+                  key={txn.txnHash}
+                  className={
+                    counter > 0 && txn === transactions[0] ? 'bg-primary/20 animate-pulse' : ''
+                  }
+                >
+                  <TableCell className="font-medium">
+                    <span className="text-primary underline hover:no-underline cursor-pointer text-sm md:text-base">
+                      {shortenTxnHash(txn.txnHash)}
+                    </span>
+                  </TableCell>
+                  <TableCell>{txn.txnType}</TableCell>
+                  <TableCell>{txn.txnStatus}</TableCell>
+                  <TableCell>{txn.age}</TableCell>
+                  <TableCell className="text-right">
+                    <Button
+                      size="sm"
+                      onClick={handleRevealClick}
+                      className="text-xs md:text-sm"
+                    >
+                      Reveal
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </section>
 
       <Dialog
@@ -356,7 +364,7 @@ export default function Home() {
           }
         }}
       >
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md max-w-[90vw] w-full">
           <DialogHeader>
             <DialogTitle>Transaction Information</DialogTitle>
           </DialogHeader>
@@ -375,7 +383,7 @@ export default function Home() {
           }
         }}
       >
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md max-w-[90vw] w-full">
           <DialogHeader>
             <DialogTitle>Transaction Hashes</DialogTitle>
           </DialogHeader>
@@ -386,7 +394,7 @@ export default function Home() {
                 key={index}
                 className="flex justify-between items-center border-b border-primary/30 p-3"
               >
-                <code className="font-mono text-xs md:text-sm overflow-hidden text-ellipsis">
+                <code className="font-mono text-xs md:text-sm overflow-hidden text-ellipsis max-w-[65%]">
                   {hash.revealed
                     ? RICK_ROLL_WORDS[index % RICK_ROLL_WORDS.length]
                     : shortenTxnHash(hash.hash)}
@@ -396,6 +404,7 @@ export default function Home() {
                   size="sm"
                   onClick={() => revealHash(index)}
                   disabled={hash.revealed}
+                  className="text-xs md:text-sm"
                 >
                   {hash.revealed ? 'Revealed' : 'Reveal'}
                 </Button>
