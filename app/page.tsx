@@ -10,49 +10,43 @@ import {
 } from '@/components/ui/table'
 import { shortenTxnHash } from '@/lib/utils'
 import { ArrowRight, Bell, Box, Code, Layout, MessageSquare } from 'lucide-react'
+import Link from 'next/link'
 
 const TRANSACTION_MOCK_DATA = [
   {
     txnHash: '0x0838f46715219fc857bd5da73170ab1e9e869850a0f7578e7565c6eb8017973d',
     txnStatus: 'Paid',
     txnType: 'INVOKE_FUNCTION',
-    paymentMethod: 'Credit Card',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da731708jy88s869850a0f7578e7565c6eb801797cd',
     txnStatus: 'Pending',
     txnType: 'INVOKE_FUNCTION',
-    paymentMethod: 'PayPal',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da731708jh7js869850a0f7578e7565c6eb8017979kj',
     txnStatus: 'Unpaid',
     txnType: 'INVOKE_FUNCTION',
-    paymentMethod: 'Bank Transfer',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da731708jhuujj69850a0f7578e7565c6eb801797ik',
     txnStatus: 'Paid',
     txnType: 'INVOKE_FUNCTION',
-    paymentMethod: 'Credit Card',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da73170ssss8s869850a0f7578e7565c6eb801794df',
     txnStatus: 'Paid',
     txnType: 'INVOKE_FUNCTION',
-    paymentMethod: 'PayPal',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da731708jsdjs869850a0f7578e7565c6eb8017972s',
     txnStatus: 'Pending',
     txnType: 'INVOKE_FUNCTION',
-    paymentMethod: 'Bank Transfer',
   },
   {
     txnHash: '0x0838f46715219fc857bd5da731708jh7js8698508hfr6h78e765c6eb801797xs',
     txnStatus: 'Unpaid',
     txnType: 'INVOKE_FUNCTION',
-    paymentMethod: 'Credit Card',
   },
 ]
 
@@ -167,12 +161,19 @@ export default function Home() {
           <TableBody>
             {TRANSACTION_MOCK_DATA.map((txn) => (
               <TableRow key={txn.txnHash}>
-                <TableCell className="font-medium">{shortenTxnHash(txn.txnHash)}</TableCell>
+                <TableCell className="font-medium">
+                  <Link href="/txn-detail">{shortenTxnHash(txn.txnHash)}</Link>
+                </TableCell>
                 <TableCell>{txn.txnType}</TableCell>
                 <TableCell>{txn.txnStatus}</TableCell>
-                <TableCell>{txn.paymentMethod}</TableCell>
+                <TableCell>12</TableCell>
                 <TableCell className="text-right">
-                  <Button size="sm">Reveal</Button>
+                  <Link
+                    href="/txn-detail"
+                    className="underline"
+                  >
+                    <Button size="sm">Reveal</Button>
+                  </Link>
                 </TableCell>
               </TableRow>
             ))}
