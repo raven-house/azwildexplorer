@@ -23,9 +23,11 @@ const PRIVACY_LINKS = [
     url: 'https://fra.europa.eu/en/law-reference/european-convention-human-rights-article-8-0',
   },
   {
+    //TODO: Confirm if this website is correct
     text: 'Request for Information Act',
     url: 'https://www.justice.gov/oip/freedom-information-act-5-usc-552',
   },
+  //TODO: Fix aztec merch side
   { text: 'Aztec Merch Store', url: 'https://store.aztec.network/' },
 ]
 
@@ -87,11 +89,13 @@ const INITIAL_TRANSACTION_DATA = [
   },
 ]
 
-const DASHBOARD_DATA = [
+const INITIAL_DASHBOARD_DATA = [
   {
     id: '1',
     heading: 'Blocks',
-    value: '1,284,180',
+    value: 1284180,
+    formattedValue: '1,284,180',
+    increaseRate: 1,
     icon: (
       <Box
         size={24}
@@ -103,7 +107,9 @@ const DASHBOARD_DATA = [
   {
     id: '2',
     heading: 'Transactions',
-    value: '164,543,068',
+    value: 164543068,
+    formattedValue: '164,543,068',
+    increaseRate: 5,
     icon: (
       <ArrowRight
         size={24}
@@ -115,7 +121,9 @@ const DASHBOARD_DATA = [
   {
     id: '3',
     heading: 'Contracts',
-    value: '5,465,761',
+    value: 5465761,
+    formattedValue: '5,465,761',
+    increaseRate: 2,
     icon: (
       <Code
         size={24}
@@ -127,7 +135,9 @@ const DASHBOARD_DATA = [
   {
     id: '4',
     heading: 'Events',
-    value: '924,266,759',
+    value: 924266759,
+    formattedValue: '924,266,759',
+    increaseRate: 10,
     icon: (
       <Bell
         size={24}
@@ -139,7 +149,9 @@ const DASHBOARD_DATA = [
   {
     id: '5',
     heading: 'Messages',
-    value: '2,095,024',
+    value: 2095024,
+    formattedValue: '2,095,024',
+    increaseRate: 3,
     icon: (
       <MessageSquare
         size={24}
@@ -151,7 +163,9 @@ const DASHBOARD_DATA = [
   {
     id: '6',
     heading: 'Classes',
-    value: '65,705',
+    value: 65705,
+    formattedValue: '65,705',
+    increaseRate: 1,
     icon: (
       <Layout
         size={24}
@@ -198,11 +212,13 @@ const getRandomTxnType = () => {
   return types[Math.floor(Math.random() * types.length)]
 }
 
+const getRandomInterval = (min: number, max: number) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
 export default function Home() {
   const [transactions, setTransactions] = useState(INITIAL_TRANSACTION_DATA)
-  const [transactionCount, setTransactionCount] = useState(
-    parseInt(DASHBOARD_DATA[1].value.replace(/,/g, ''))
-  )
+  const [dashboardData, setDashboardData] = useState(INITIAL_DASHBOARD_DATA)
   const [counter, setCounter] = useState(0)
 
   const [selectedMessage, setSelectedMessage] = useState('')
@@ -210,29 +226,92 @@ export default function Home() {
   const [transactionHashes, setTransactionHashes] = useState<Transaction[]>([])
   const router = useRouter()
 
-  useEffect(() => {
-    const getRandomInterval = () => Math.floor(Math.random() * (30000 - 15000 + 1)) + 15000
+  const updateDashboardItem = (id: string, increment: number) => {
+    setDashboardData((prevData) => {
+      return prevData.map((item) => {
+        if (item.id === id) {
+          const newValue = item.value + increment
+          return {
+            ...item,
+            value: newValue,
+            formattedValue: newValue.toLocaleString(),
+          }
+        }
+        return item
+      })
+    })
+  }
 
-    const addNewTransaction = () => {
-      const newTransaction = {
-        txnHash: generateRandomTxnHash(),
-        txnStatus: getRandomStatus(),
-        txnType: getRandomTxnType(),
-        age: '0s ago',
+  useEffect(() => {
+    const intervals = dashboardData.map((item) => {
+      let minInterval, maxInterval
+
+      switch (item.id) {
+        case '1': // Blocks
+          minInterval = 3000
+          maxInterval = 6000
+          break
+        case '2': // Transactions
+          minInterval = 1000
+          maxInterval = 3000
+          break
+        case '3': // Contracts
+          minInterval = 5000
+          maxInterval = 10000
+          break
+        case '4': // Events
+          minInterval = 2000
+          maxInterval = 4000
+          break
+        case '5': // Messages
+          minInterval = 4000
+          maxInterval = 8000
+          break
+        case '6': // Classes
+          minInterval = 10000
+          maxInterval = 20000
+          break
+        default:
+          minInterval = 5000
+          maxInterval = 10000
       }
 
-      setTransactions((prevTransactions) => {
-        const updatedTransactions = [newTransaction, ...prevTransactions]
-        return updatedTransactions.slice(0, 7)
-      })
+      const intervalId = setInterval(() => {
+        const randomMultiplier = Math.random() < 0.2 ? Math.floor(Math.random() * 5) + 2 : 1
+        const increment = item.increaseRate * randomMultiplier
 
-      setTransactionCount((prevCount) => prevCount + 1)
-      setCounter((prevCounter) => prevCounter + 1)
-      setTimeout(addNewTransaction, getRandomInterval())
+        updateDashboardItem(item.id, increment)
+
+        if (item.id === '2' && Math.random() < 0.3) {
+          addNewTransaction()
+        }
+      }, getRandomInterval(minInterval, maxInterval))
+
+      return intervalId
+    })
+
+    return () => {
+      intervals.forEach((intervalId) => clearInterval(intervalId))
+    }
+  }, [])
+
+  const addNewTransaction = () => {
+    const newTransaction = {
+      txnHash: generateRandomTxnHash(),
+      txnStatus: getRandomStatus(),
+      txnType: getRandomTxnType(),
+      age: '0s ago',
     }
 
-    const initialTimeout = setTimeout(addNewTransaction, getRandomInterval())
+    setTransactions((prevTransactions) => {
+      const updatedTransactions = [newTransaction, ...prevTransactions]
+      return updatedTransactions.slice(0, 7)
+    })
 
+    setCounter((prevCounter) => prevCounter + 1)
+  }
+
+  useEffect(() => {
     const ageInterval = setInterval(() => {
       setTransactions((prevTransactions) =>
         prevTransactions.map((txn) => {
@@ -247,19 +326,9 @@ export default function Home() {
     }, 1000)
 
     return () => {
-      clearTimeout(initialTimeout)
       clearInterval(ageInterval)
     }
   }, [])
-
-  const formattedTransactionCount = transactionCount.toLocaleString()
-
-  const updatedDashboardData = DASHBOARD_DATA.map((item) => {
-    if (item.id === '2') {
-      return { ...item, value: formattedTransactionCount }
-    }
-    return item
-  })
 
   const handleRevealClick = () => {
     const choice = Math.floor(Math.random() * 3)
@@ -286,14 +355,14 @@ export default function Home() {
     <main className="pt-20 flex flex-col gap-20">
       <section>
         <div className="grid grid-cols-3 gap-3">
-          {updatedDashboardData.map((data) => {
+          {dashboardData.map((data) => {
             return (
               <Card key={data.id}>
                 <div className="flex items-center px-6">
                   <div>{data.icon}</div>
                   <CardHeader>
                     <CardTitle>{data.heading}</CardTitle>
-                    <CardDescription className="text-2xl">{data.value}</CardDescription>
+                    <CardDescription className="text-2xl">{data.formattedValue}</CardDescription>
                   </CardHeader>
                 </div>
               </Card>

@@ -8,11 +8,11 @@ import { Sparkles, Laugh, AlertTriangle, Lock, Search } from 'lucide-react'
 import Link from 'next/link'
 
 const PRIVACY_MESSAGES = [
-  'Something happened 🤷‍♂️',
-  "Noooooo, \n txs are private, there's nothing to see here 🕵️‍♀️",
-  "Don't you know what zero-knowledge means? 🧠",
-  "Even if I wanted to show you something, I can't 🔒",
-  'You can keep clicking all you want 👆',
+  'Something happened 🤷‍♂️😝',
+  "Noooooo!\nTXs are private, there's nothing to see here 😠",
+  "Don't you know what zero-knowledge means?! 😡",
+  "Even if I *wanted* to show you something, I can't 😏",
+  'You can keep clicking all you want 💀🫠',
 ]
 
 const getRandomIcon = () => {
