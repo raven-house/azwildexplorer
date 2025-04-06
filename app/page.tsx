@@ -12,16 +12,21 @@ import {
   Table,
 } from '@/components/ui/table'
 import { formatTime, parseTimeToSeconds, shortenTxnHash } from '@/lib/utils'
-import { ArrowRight, Bell, Box, Code, Layout, MessageSquare } from 'lucide-react'
+import { ArrowRight, Bell, Box, Code, Layout, MessageSquare, RefreshCw } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from '@/components/ui/dialog'
-import { useRouter } from 'next/navigation'
-import { INITIAL_TRANSACTION_DATA, PRIVACY_LINKS, RICK_ROLL_WORDS } from '@/lib/mock-data'
+import {
+  INITIAL_TRANSACTION_DATA,
+  MODAL_CASES,
+  PRIVACY_LINKS,
+  RICK_ROLL_WORDS,
+} from '@/lib/mock-data'
+import Image from 'next/image'
 
 const INITIAL_DASHBOARD_DATA = [
   {
@@ -155,10 +160,10 @@ export default function Home() {
   const [dashboardData, setDashboardData] = useState(INITIAL_DASHBOARD_DATA)
   const [counter, setCounter] = useState(0)
 
-  const [selectedMessage, setSelectedMessage] = useState('')
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [modalCases, setModalCases] = useState<Array<any>>([])
   const [transactionHashes, setTransactionHashes] = useState<Transaction[]>([])
-  const router = useRouter()
 
   const updateDashboardItem = (id: string, increment: number) => {
     setDashboardData((prevData) => {
@@ -265,18 +270,42 @@ export default function Home() {
   }, [])
 
   const handleRevealClick = () => {
-    const choice = Math.floor(Math.random() * 3)
+    const isHyperlink = Math.random() < 0.4
 
-    if (choice === 0) {
-      router.push('/txn-detail')
-    } else if (choice === 1) {
+    if (isHyperlink) {
       const randomIndex = Math.floor(Math.random() * PRIVACY_LINKS.length)
       window.open(PRIVACY_LINKS[randomIndex].url, '_blank')
     } else {
-      const randomHashes = generateRandomHashes(6)
-      setTransactionHashes(randomHashes)
+      setModalCases([])
+      const showTransactionHashes = Math.random() < 0.3
+
+      if (showTransactionHashes) {
+        setTransactionHashes(generateRandomHashes(6))
+        setModalCases([{ type: 'hashes' }])
+      } else {
+        const randomCaseIndex = Math.floor(Math.random() * MODAL_CASES.length)
+        setModalCases([
+          {
+            type: 'case',
+            case: MODAL_CASES[randomCaseIndex],
+          },
+        ])
+      }
+
       setIsDialogOpen(true)
     }
+  }
+
+  const handleTryAgain = () => {
+    const randomCaseIndex = Math.floor(Math.random() * MODAL_CASES.length)
+
+    setModalCases((prev) => [
+      ...prev,
+      {
+        type: 'case',
+        case: MODAL_CASES[randomCaseIndex],
+      },
+    ])
   }
 
   const revealHash = (index: number) => {
@@ -356,11 +385,12 @@ export default function Home() {
       </section>
 
       <Dialog
-        open={isDialogOpen && !!selectedMessage}
+        open={isDialogOpen}
         onOpenChange={(open) => {
           if (!open) {
             setIsDialogOpen(false)
-            setSelectedMessage('')
+            setModalCases([])
+            setTransactionHashes([])
           }
         }}
       >
@@ -368,48 +398,89 @@ export default function Home() {
           <DialogHeader>
             <DialogTitle>Transaction Information</DialogTitle>
           </DialogHeader>
-          <div className="p-4 text-center">
-            <p className="text-lg font-semibold text-primary">{selectedMessage}</p>
-          </div>
-        </DialogContent>
-      </Dialog>
 
-      <Dialog
-        open={isDialogOpen && transactionHashes.length > 0}
-        onOpenChange={(open) => {
-          if (!open) {
-            setIsDialogOpen(false)
-            setTransactionHashes([])
-          }
-        }}
-      >
-        <DialogContent className="sm:max-w-md max-w-[90vw] w-full">
-          <DialogHeader>
-            <DialogTitle>Transaction Hashes</DialogTitle>
-          </DialogHeader>
-          <DialogDescription></DialogDescription>
-          <div className="grid">
-            {transactionHashes.map((hash, index) => (
+          <div className="p-4 space-y-8 max-h-[70vh] overflow-y-auto">
+            {modalCases.map((modalItem, modalIndex) => (
               <div
-                key={index}
-                className="flex justify-between items-center border-b border-primary/30 p-3"
+                key={modalIndex}
+                className={`p-4 rounded-lg ${
+                  modalIndex > 0 ? 'border-t border-gray-200 pt-8' : ''
+                }`}
               >
-                <code className="font-mono text-xs md:text-sm overflow-hidden text-ellipsis max-w-[65%]">
-                  {hash.revealed
-                    ? RICK_ROLL_WORDS[index % RICK_ROLL_WORDS.length]
-                    : shortenTxnHash(hash.hash)}
-                </code>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => revealHash(index)}
-                  disabled={hash.revealed}
-                  className="text-xs md:text-sm"
-                >
-                  {hash.revealed ? 'Revealed' : 'Reveal'}
-                </Button>
+                {modalItem.type === 'case' && (
+                  <div className="case-content">
+                    {modalItem.case.isBlockQuote ? (
+                      <blockquote className="p-4 my-4 border-l-4 border-primary bg-primary/10 text-lg font-medium">
+                        {modalItem.case.title}
+                      </blockquote>
+                    ) : (
+                      <p className="text-lg font-semibold text-center mb-4">
+                        {modalItem.case.title}
+                      </p>
+                    )}
+
+                    {modalItem.case.hasSubheading && (
+                      <p className="text-sm text-gray-600 mt-2 mb-4">{modalItem.case.subheading}</p>
+                    )}
+
+                    {modalItem.case.gifUrl && (
+                      <div className="flex justify-center my-4">
+                        <Image
+                          src={modalItem.case.gifUrl}
+                          alt="Reaction GIF"
+                          className="max-w-full rounded-md shadow-sm"
+                          width={300}
+                          height={200}
+                        />
+                      </div>
+                    )}
+
+                    {modalItem.case.content && (
+                      <p className="text-sm text-gray-700 mt-4">{modalItem.case.content}</p>
+                    )}
+                  </div>
+                )}
+
+                {modalItem.type === 'hashes' && (
+                  <div className="grid">
+                    <p className="font-semibold text-center mb-4">Transaction Hashes</p>
+                    {transactionHashes.map((hash, index) => (
+                      <div
+                        key={`${modalIndex}-hash-${index}`}
+                        className="flex justify-between items-center border-b border-primary/30 p-3"
+                      >
+                        <code className="font-mono text-xs md:text-sm overflow-hidden text-ellipsis max-w-[65%]">
+                          {hash.revealed
+                            ? RICK_ROLL_WORDS[index % RICK_ROLL_WORDS.length]
+                            : shortenTxnHash(hash.hash)}
+                        </code>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => revealHash(index)}
+                          disabled={hash.revealed}
+                          className="text-xs md:text-sm"
+                        >
+                          {hash.revealed ? 'Revealed' : 'Reveal'}
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
+
+            {modalCases[0]?.type === 'case' && (
+              <DialogFooter>
+                <Button
+                  onClick={handleTryAgain}
+                  className="w-full mt-2"
+                  variant="outline"
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" /> Try Again
+                </Button>
+              </DialogFooter>
+            )}
           </div>
         </DialogContent>
       </Dialog>

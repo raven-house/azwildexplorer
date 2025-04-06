@@ -68,3 +68,55 @@ export const INITIAL_TRANSACTION_DATA = [
     age: '1m ago',
   },
 ]
+
+export const MODAL_CASES = [
+  {
+    id: 0,
+    title: 'Something Happened 🤯',
+    content: '',
+    gifUrl:
+      'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMmFud3ZmaHAyeXVmOXlyNmZwNGVoNXVpMjAzN2JpZ2JheXlsZGhjMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Cdkk6wFFqisTe/giphy.gif',
+
+    isBlockQuote: false,
+    hasSubheading: false,
+    subheading: '',
+  },
+  {
+    id: 1,
+    title: "no, txs are private, there's nothing to see here!",
+    content: '',
+    gifUrl: '',
+    isBlockQuote: true,
+    hasSubheading: false,
+    subheading: '',
+  },
+  {
+    id: 2,
+    title: "don't you know what zero-knowledge means?",
+    content: '',
+    gifUrl: '',
+    isBlockQuote: false,
+    hasSubheading: true,
+    subheading:
+      'Perhaps you should read this: https://dev.to/spalladino/a-beginners-intro-to-coding-zero-knowledge-proofs-c56',
+  },
+  {
+    id: 3,
+    title: "even if I wanted to show you something, I can't",
+    content: '',
+    gifUrl:
+      'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdTFmaG83ZjZwNmFwZjY3Z3Q1YmpidWpqNjBtcGw3MzNxNDg5MDd0MyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/flXsA2wobC70p3sWVf/giphy.gif',
+    isBlockQuote: false,
+    hasSubheading: false,
+    subheading: '',
+  },
+  {
+    id: 4,
+    title: 'you can keep clicking all you want',
+    content: '',
+    gifUrl: '',
+    isBlockQuote: false,
+    hasSubheading: false,
+    subheading: '',
+  },
+]
