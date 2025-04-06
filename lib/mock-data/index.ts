@@ -72,7 +72,6 @@ export const MODAL_CASES = [
     content: '',
     gifUrl:
       'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMmFud3ZmaHAyeXVmOXlyNmZwNGVoNXVpMjAzN2JpZ2JheXlsZGhjMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Cdkk6wFFqisTe/giphy.gif',
-
     isBlockQuote: false,
     hasSubheading: false,
     subheading: '',
@@ -93,8 +92,9 @@ export const MODAL_CASES = [
     gifUrl: '',
     isBlockQuote: false,
     hasSubheading: true,
-    subheading:
-      'Perhaps you should read this: https://dev.to/spalladino/a-beginners-intro-to-coding-zero-knowledge-proofs-c56',
+    subheadingLink:
+      'https://dev.to/spalladino/a-beginners-intro-to-coding-zero-knowledge-proofs-c56',
+    subheadingText: 'Perhaps you should read this',
   },
   {
     id: 3,

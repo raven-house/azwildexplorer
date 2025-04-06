@@ -27,6 +27,7 @@ import {
   RICK_ROLL_LYRICS,
 } from '@/lib/mock-data'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const INITIAL_DASHBOARD_DATA = [
   {
@@ -420,7 +421,22 @@ export default function Home() {
                     )}
 
                     {modalItem.case.hasSubheading && (
-                      <p className="text-sm text-gray-600 mt-2 mb-4">{modalItem.case.subheading}</p>
+                      <p className="text-sm text-gray-600 mt-2 mb-4">
+                        {modalItem.case.subheadingLink ? (
+                          <>
+                            <Link
+                              href={modalItem.case.subheadingLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline"
+                            >
+                              {modalItem.case.subheadingText}
+                            </Link>
+                          </>
+                        ) : (
+                          modalItem.case.subheading
+                        )}
+                      </p>
                     )}
 
                     {modalItem.case.gifUrl && (
