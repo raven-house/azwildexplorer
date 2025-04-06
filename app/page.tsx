@@ -137,7 +137,7 @@ const generateRandomHashes = (count: number): Transaction[] => {
 }
 
 const getRandomStatus = () => {
-  const statuses = ['Paid', 'Pending', 'Unpaid']
+  const statuses = ['PENDING', 'FAILED', 'ACCEPTED_ON_L2']
   return statuses[Math.floor(Math.random() * statuses.length)]
 }
 
