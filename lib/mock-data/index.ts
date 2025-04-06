@@ -9,8 +9,6 @@ export const PRIVACY_LINKS = [
     text: 'Request for Information Act',
     url: 'https://www.justice.gov/oip/freedom-information-act-5-usc-552',
   },
-  //TODO: Fix aztec merch side
-  { text: 'Aztec Merch Store', url: 'https://store.aztec.network/' },
 ]
 
 export const RICK_ROLL_WORDS = [
