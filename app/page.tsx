@@ -24,7 +24,7 @@ import {
   INITIAL_TRANSACTION_DATA,
   MODAL_CASES,
   PRIVACY_LINKS,
-  RICK_ROLL_WORDS,
+  RICK_ROLL_LYRICS,
 } from '@/lib/mock-data'
 import Image from 'next/image'
 
@@ -443,28 +443,79 @@ export default function Home() {
 
                 {modalItem.type === 'hashes' && (
                   <div className="grid">
-                    <p className="font-semibold text-center mb-4">Transaction Hashes</p>
-                    {transactionHashes.map((hash, index) => (
-                      <div
-                        key={`${modalIndex}-hash-${index}`}
-                        className="flex justify-between items-center border-b border-primary/30 p-3"
-                      >
-                        <code className="font-mono text-xs md:text-sm overflow-hidden text-ellipsis max-w-[65%]">
-                          {hash.revealed
-                            ? RICK_ROLL_WORDS[index % RICK_ROLL_WORDS.length]
-                            : shortenTxnHash(hash.hash)}
-                        </code>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => revealHash(index)}
-                          disabled={hash.revealed}
-                          className="text-xs md:text-sm"
+                    {/* Group transactions by type */}
+                    <div className="mb-6">
+                      <p className="font-semibold text-center mb-4">Notes</p>
+                      {transactionHashes.slice(0, 2).map((hash, index) => (
+                        <div
+                          key={`${modalIndex}-hash-${index}`}
+                          className="flex justify-between items-center border-b border-primary/30 p-3"
                         >
-                          {hash.revealed ? 'Revealed' : 'Reveal'}
-                        </Button>
-                      </div>
-                    ))}
+                          <code className="font-mono text-xs md:text-sm overflow-hidden text-ellipsis max-w-[65%]">
+                            {hash.revealed ? RICK_ROLL_LYRICS[index] : shortenTxnHash(hash.hash)}
+                          </code>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => revealHash(index)}
+                            disabled={hash.revealed}
+                            className="text-xs md:text-sm"
+                          >
+                            {hash.revealed ? 'Revealed' : 'Reveal'}
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mb-6">
+                      <p className="font-semibold text-center mb-4">Nullifiers</p>
+                      {transactionHashes.slice(2, 4).map((hash, index) => (
+                        <div
+                          key={`${modalIndex}-hash-${index + 2}`}
+                          className="flex justify-between items-center border-b border-primary/30 p-3"
+                        >
+                          <code className="font-mono text-xs md:text-sm overflow-hidden text-ellipsis max-w-[65%]">
+                            {hash.revealed
+                              ? RICK_ROLL_LYRICS[index + 2]
+                              : shortenTxnHash(hash.hash)}
+                          </code>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => revealHash(index + 2)}
+                            disabled={hash.revealed}
+                            className="text-xs md:text-sm"
+                          >
+                            {hash.revealed ? 'Revealed' : 'Reveal'}
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mb-2">
+                      <p className="font-semibold text-center mb-4">Logs</p>
+                      {transactionHashes.slice(4, 6).map((hash, index) => (
+                        <div
+                          key={`${modalIndex}-hash-${index + 4}`}
+                          className="flex justify-between items-center border-b border-primary/30 p-3"
+                        >
+                          <code className="font-mono text-xs md:text-sm overflow-hidden text-ellipsis max-w-[65%]">
+                            {hash.revealed
+                              ? RICK_ROLL_LYRICS[index + 4]
+                              : shortenTxnHash(hash.hash)}
+                          </code>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => revealHash(index + 4)}
+                            disabled={hash.revealed}
+                            className="text-xs md:text-sm"
+                          >
+                            {hash.revealed ? 'Revealed' : 'Reveal'}
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>

@@ -11,17 +11,13 @@ export const PRIVACY_LINKS = [
   },
 ]
 
-export const RICK_ROLL_WORDS = [
-  'Never',
-  'gonna',
-  'give',
-  'you',
-  'up',
-  'never',
-  'gonna',
-  'let',
-  'you',
-  'down',
+export const RICK_ROLL_LYRICS = [
+  'Never gonna give you up, never gonna let you down',
+  'Never gonna run around and desert you',
+  'Never gonna make you cry, never gonna say goodbye',
+  'Never gonna tell a lie and hurt you',
+  'Never gonna give you up, never gonna let you down',
+  'Never gonna run around and desert you',
 ]
 
 export const INITIAL_TRANSACTION_DATA = [
