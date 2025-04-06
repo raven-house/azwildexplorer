@@ -270,6 +270,22 @@ export default function Home() {
     }
   }, [])
 
+  useEffect(() => {
+    let autoRetryInterval: NodeJS.Timeout | undefined
+
+    if (isDialogOpen && modalCases.length > 0 && modalCases[0]?.type === 'case') {
+      autoRetryInterval = setInterval(() => {
+        handleTryAgain()
+      }, 5000)
+    }
+
+    return () => {
+      if (autoRetryInterval) {
+        clearInterval(autoRetryInterval)
+      }
+    }
+  }, [isDialogOpen, modalCases])
+
   const handleRevealClick = () => {
     const isHyperlink = Math.random() < 0.4
 
