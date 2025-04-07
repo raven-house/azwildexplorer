@@ -12,7 +12,7 @@ import {
   Table,
 } from '@/components/ui/table'
 import { formatTime, parseTimeToSeconds, shortenTxnHash } from '@/lib/utils'
-import { ArrowRight, Bell, Box, Code, Layout, MessageSquare, RefreshCw } from 'lucide-react'
+import { ArrowRight, Box, Code, RefreshCw } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -72,48 +72,6 @@ const INITIAL_DASHBOARD_DATA = [
     ),
     color: 'text-pink-500',
   },
-  {
-    id: '4',
-    heading: 'Events',
-    value: 924266759,
-    formattedValue: '924,266,759',
-    increaseRate: 10,
-    icon: (
-      <Bell
-        size={24}
-        className="text-pink-500"
-      />
-    ),
-    color: 'text-pink-500',
-  },
-  {
-    id: '5',
-    heading: 'Messages',
-    value: 2095024,
-    formattedValue: '2,095,024',
-    increaseRate: 3,
-    icon: (
-      <MessageSquare
-        size={24}
-        className="text-pink-500"
-      />
-    ),
-    color: 'text-pink-500',
-  },
-  {
-    id: '6',
-    heading: 'Classes',
-    value: 65705,
-    formattedValue: '65,705',
-    increaseRate: 1,
-    icon: (
-      <Layout
-        size={24}
-        className="text-pink-500"
-      />
-    ),
-    color: 'text-pink-500',
-  },
 ]
 
 type Transaction = { hash: string; revealed: boolean }
@@ -143,7 +101,7 @@ const generateRandomHashes = (count: number): Transaction[] => {
 }
 
 const getRandomStatus = () => {
-  const statuses = ['PENDING', 'FAILED', 'ACCEPTED_ON_L2']
+  const statuses = ['PENDING', 'FAILED', 'ACCEPTED_ON_L1']
   return statuses[Math.floor(Math.random() * statuses.length)]
 }
 
@@ -154,6 +112,10 @@ const getRandomTxnType = () => {
 
 const getRandomInterval = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+const getNewTransactionAge = () => {
+  return 'just now'
 }
 
 export default function Home() {
@@ -183,7 +145,7 @@ export default function Home() {
   }
 
   useEffect(() => {
-    const intervals = dashboardData.map((item) => {
+    const counterIntervals = dashboardData.map((item) => {
       let minInterval, maxInterval
 
       switch (item.id) {
@@ -199,18 +161,6 @@ export default function Home() {
           minInterval = 5000
           maxInterval = 10000
           break
-        case '4': // Events
-          minInterval = 2000
-          maxInterval = 4000
-          break
-        case '5': // Messages
-          minInterval = 4000
-          maxInterval = 8000
-          break
-        case '6': // Classes
-          minInterval = 10000
-          maxInterval = 20000
-          break
         default:
           minInterval = 5000
           maxInterval = 10000
@@ -219,20 +169,24 @@ export default function Home() {
       const intervalId = setInterval(() => {
         const randomMultiplier = Math.random() < 0.2 ? Math.floor(Math.random() * 5) + 2 : 1
         const increment = item.increaseRate * randomMultiplier
-
         updateDashboardItem(item.id, increment)
-
-        if (item.id === '2' && Math.random() < 0.3) {
-          addNewTransaction()
-        }
       }, getRandomInterval(minInterval, maxInterval))
 
       return intervalId
     })
 
+    const txnInterval = setInterval(() => {
+      addNewTransaction()
+    }, 20000)
+
     return () => {
-      intervals.forEach((intervalId) => clearInterval(intervalId))
+      counterIntervals.forEach((intervalId) => clearInterval(intervalId))
+      clearInterval(txnInterval)
     }
+
+    // return () => {
+    //   intervals.forEach((intervalId) => clearInterval(intervalId))
+    // }
   }, [])
 
   const addNewTransaction = () => {
@@ -240,7 +194,7 @@ export default function Home() {
       txnHash: generateRandomTxnHash(),
       txnStatus: getRandomStatus(),
       txnType: getRandomTxnType(),
-      age: '0s ago',
+      age: getNewTransactionAge(),
     }
 
     setTransactions((prevTransactions) => {
@@ -255,15 +209,31 @@ export default function Home() {
     const ageInterval = setInterval(() => {
       setTransactions((prevTransactions) =>
         prevTransactions.map((txn) => {
+          if (txn.age === 'just now') {
+            return {
+              ...txn,
+              age: '1m ago',
+            }
+          }
+
           const currentAgeInSeconds = parseTimeToSeconds(txn.age)
-          const newAgeInSeconds = isNaN(currentAgeInSeconds) ? 1 : currentAgeInSeconds + 1
+          let newAgeInSeconds = currentAgeInSeconds
+
+          if (currentAgeInSeconds < 300) {
+            newAgeInSeconds = currentAgeInSeconds + 60
+          } else if (currentAgeInSeconds < 3600) {
+            newAgeInSeconds = currentAgeInSeconds + 120
+          } else {
+            newAgeInSeconds = currentAgeInSeconds + 300
+          }
+
           return {
             ...txn,
             age: formatTime(newAgeInSeconds),
           }
         })
       )
-    }, 1000)
+    }, 15000)
 
     return () => {
       clearInterval(ageInterval)
@@ -333,6 +303,9 @@ export default function Home() {
 
   return (
     <main className="pt-6 md:pt-10 lg:pt-16 pb-10 flex flex-col gap-8 md:gap-12 lg:gap-16 px-4 md:px-6 lg:px-8">
+      <h1 className="text-2xl font-bold text-center">
+        a meme explorer demonstrating the power of privacy and what it means for blockchains
+      </h1>
       <section>
         <div className="grid  grid-cols-2 xl:grid-cols-3 gap-3">
           {dashboardData.map((data) => {
@@ -363,7 +336,6 @@ export default function Home() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">Transaction Hash</TableHead>
-                <TableHead>Type</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Age</TableHead>
                 <TableHead className="text-right">Action</TableHead>
@@ -382,7 +354,6 @@ export default function Home() {
                       {shortenTxnHash(txn.txnHash)}
                     </span>
                   </TableCell>
-                  <TableCell>{txn.txnType}</TableCell>
                   <TableCell>{txn.txnStatus}</TableCell>
                   <TableCell>{txn.age}</TableCell>
                   <TableCell className="text-right">
