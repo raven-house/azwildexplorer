@@ -135,3 +135,40 @@
   background: var(--primary);
   border-radius: 10px;
 }
+
+.transaction-table tbody tr {
+  transition: all 0.5s ease-in-out;
+  animation-fill-mode: both;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.transaction-table tbody tr:first-child {
+  animation: fadeInDown 0.5s ease-in-out;
+}
+
+.transaction-table td {
+  transition: background-color 0.5s ease;
+}
+
+.transaction-highlight {
+  background-color: rgba(var(--primary-rgb), 0.1);
+  transition: background-color 1.5s ease-in-out;
+}
+
+.transaction-highlight:hover {
+  background-color: rgba(var(--primary-rgb), 0.15);
+}
+
+.transaction-table tbody tr {
+  height: 3.5rem;
+}

@@ -177,7 +177,7 @@ export default function Home() {
 
     const txnInterval = setInterval(() => {
       addNewTransaction()
-    }, 20000)
+    }, 2000)
 
     return () => {
       counterIntervals.forEach((intervalId) => clearInterval(intervalId))
@@ -332,7 +332,7 @@ export default function Home() {
       <section>
         <h2 className="text-primary font-bold mb-4 text-lg md:text-xl">Latest Transactions</h2>
         <div className="overflow-x-auto -mx-4 px-4">
-          <Table>
+          <Table className="transaction-table">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">Transaction Hash</TableHead>
@@ -342,12 +342,13 @@ export default function Home() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {transactions.map((txn) => (
+              {transactions.map((txn, index) => (
                 <TableRow
                   key={txn.txnHash}
-                  className={
-                    counter > 0 && txn === transactions[0] ? 'bg-primary/20 animate-pulse' : ''
-                  }
+                  className={counter > 0 && index === 0 ? 'transaction-highlight' : ''}
+                  style={{
+                    transitionDelay: `${index * 50}ms`,
+                  }}
                 >
                   <TableCell className="font-medium">
                     <span className="text-primary underline hover:no-underline cursor-pointer text-sm md:text-base">
