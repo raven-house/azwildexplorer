@@ -28,6 +28,7 @@ import {
 } from '@/lib/mock-data'
 import Image from 'next/image'
 import Link from 'next/link'
+import { ReadDisclaimerModal } from '@/components/ReadDisclaimerModal'
 
 const INITIAL_DASHBOARD_DATA = [
   {
@@ -101,7 +102,7 @@ const generateRandomHashes = (count: number): Transaction[] => {
 }
 
 const getRandomStatus = () => {
-  const statuses = ['PENDING', 'FAILED', 'ACCEPTED_ON_L1']
+  const statuses = ['PENDING', 'FAILED']
   return statuses[Math.floor(Math.random() * statuses.length)]
 }
 
@@ -177,7 +178,7 @@ export default function Home() {
 
     const txnInterval = setInterval(() => {
       addNewTransaction()
-    }, 2000)
+    }, 20000)
 
     return () => {
       counterIntervals.forEach((intervalId) => clearInterval(intervalId))
@@ -303,9 +304,10 @@ export default function Home() {
 
   return (
     <main className="pt-6 md:pt-10 lg:pt-16 pb-10 flex flex-col gap-8 md:gap-12 lg:gap-16 px-4 md:px-6 lg:px-8">
-      <h1 className="text-2xl font-bold text-center">
-        a meme explorer demonstrating the power of privacy and what it means for blockchains
-      </h1>
+      <div className="flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-center">This is not a real block explorer</h1>
+        <ReadDisclaimerModal />
+      </div>
       <section>
         <div className="grid  grid-cols-2 xl:grid-cols-3 gap-3">
           {dashboardData.map((data) => {
