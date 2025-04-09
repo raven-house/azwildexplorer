@@ -1,13 +1,18 @@
 export const PRIVACY_LINKS = [
-  { text: 'Ever heard of GDPR?', url: 'https://gdpr-info.eu/' },
+  {
+    text: 'Ever heard of GDPR?',
+    url: 'https://gdpr-info.eu/',
+    contentType: 'gdpr',
+  },
   {
     text: 'Constitutional rights for privacy',
     url: 'https://fra.europa.eu/en/law-reference/european-convention-human-rights-article-8-0',
+    contentType: 'constitutional',
   },
   {
-    //TODO: Confirm if this website is correct
     text: 'Request for Information Act',
     url: 'https://www.justice.gov/oip/freedom-information-act-5-usc-552',
+    contentType: 'foi',
   },
 ]
 

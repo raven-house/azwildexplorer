@@ -29,6 +29,7 @@ import {
 import Image from 'next/image'
 import Link from 'next/link'
 import { ReadDisclaimerModal } from '@/components/ReadDisclaimerModal'
+import PrivacyContentModal, { PrivacyContentType } from '@/components/PrivacyContentModal'
 
 const INITIAL_DASHBOARD_DATA = [
   {
@@ -129,6 +130,9 @@ export default function Home() {
   const [modalCases, setModalCases] = useState<Array<any>>([])
   const [transactionHashes, setTransactionHashes] = useState<Transaction[]>([])
 
+  const [isPrivacyContentModalOpen, setIsPrivacyContentModalOpen] = useState(false)
+  const [privacyContentType, setPrivacyContentType] = useState<PrivacyContentType>('gdpr')
+
   const updateDashboardItem = (id: string, increment: number) => {
     setDashboardData((prevData) => {
       return prevData.map((item) => {
@@ -184,10 +188,6 @@ export default function Home() {
       counterIntervals.forEach((intervalId) => clearInterval(intervalId))
       clearInterval(txnInterval)
     }
-
-    // return () => {
-    //   intervals.forEach((intervalId) => clearInterval(intervalId))
-    // }
   }, [])
 
   const addNewTransaction = () => {
@@ -258,11 +258,14 @@ export default function Home() {
   }, [isDialogOpen, modalCases])
 
   const handleRevealClick = () => {
-    const isHyperlink = Math.random() < 0.4
+    const isPrivacyContent = Math.random() < 0.4
 
-    if (isHyperlink) {
+    if (isPrivacyContent) {
       const randomIndex = Math.floor(Math.random() * PRIVACY_LINKS.length)
-      window.open(PRIVACY_LINKS[randomIndex].url, '_blank')
+      const selectedLink = PRIVACY_LINKS[randomIndex]
+
+      setPrivacyContentType(selectedLink.contentType as PrivacyContentType)
+      setIsPrivacyContentModalOpen(true)
     } else {
       setModalCases([])
       const showTransactionHashes = Math.random() < 0.3
@@ -374,6 +377,12 @@ export default function Home() {
           </Table>
         </div>
       </section>
+
+      <PrivacyContentModal
+        isOpen={isPrivacyContentModalOpen}
+        onClose={() => setIsPrivacyContentModalOpen(false)}
+        contentType={privacyContentType}
+      />
 
       <Dialog
         open={isDialogOpen}
