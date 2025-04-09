@@ -129,16 +129,7 @@ const contentMap = {
                 ICO&apos;s Guide to GDPR
               </a>
             </li>
-            <li>
-              <a
-                href="https://gdpr.org/resources/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                GDPR.org Resources
-              </a>
-            </li>
+
             <li>
               <a
                 href="https://fpf.org/"
