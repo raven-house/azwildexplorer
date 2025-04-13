@@ -103,7 +103,7 @@ const generateRandomHashes = (count: number): Transaction[] => {
 }
 
 const getRandomStatus = () => {
-  const statuses = ['PENDING', 'FAILED']
+  const statuses = ['PENDING']
   return statuses[Math.floor(Math.random() * statuses.length)]
 }
 
@@ -356,9 +356,7 @@ export default function Home() {
                   }}
                 >
                   <TableCell className="font-medium">
-                    <span className="text-primary underline hover:no-underline cursor-pointer text-sm md:text-base">
-                      {shortenTxnHash(txn.txnHash)}
-                    </span>
+                    <span className="text-sm md:text-base">{shortenTxnHash(txn.txnHash)}</span>
                   </TableCell>
                   <TableCell>{txn.txnStatus}</TableCell>
                   <TableCell>{txn.age}</TableCell>

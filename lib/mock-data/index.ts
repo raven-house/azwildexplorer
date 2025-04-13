@@ -44,12 +44,7 @@ export const INITIAL_TRANSACTION_DATA = [
     txnType: 'INVOKE_FUNCTION',
     age: '47m ago',
   },
-  {
-    txnHash: '0x0838f46715219fc857bd5da731708jhuujj69850a0f7578e7565c6eb801797ik',
-    txnStatus: 'FAILED',
-    txnType: 'INVOKE_FUNCTION',
-    age: '1h ago',
-  },
+
   {
     txnHash: '0x0838f46715219fc857bd5da73170ssss8s869850a0f7578e7565c6eb801794df',
     txnStatus: 'ACCEPTED_ON_L2',
