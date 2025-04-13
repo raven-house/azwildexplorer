@@ -306,7 +306,7 @@ export default function Home() {
   }
 
   return (
-    <main className="pt-6 md:pt-10 lg:pt-16 pb-10 flex flex-col gap-8 md:gap-12 lg:gap-16 px-4 md:px-6 lg:px-8">
+    <main className="pt-6 md:pt-8 pb-10 flex flex-col gap-4 md:gap-12 px-4 md:px-6 lg:px-8">
       <div className="flex items-center gap-2">
         <h1 className="text-2xl font-bold text-center">This is not a real block explorer</h1>
         <ReadDisclaimerModal />
