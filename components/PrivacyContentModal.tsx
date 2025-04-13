@@ -25,139 +25,47 @@ const contentMap = {
       <div className="space-y-4">
         <h2 className="text-lg font-bold">What&apos;s GDPR?</h2>
         <p>
-          The General Data Protection Regulation (GDPR) is a landmark privacy law that took effect
-          in May 2018. Think of it as a comprehensive rulebook that changed how organizations handle
-          personal data. Before GDPR, companies could collect vast amounts of information about you
-          with minimal transparency. Now, they need to follow strict guidelines or face serious
-          consequences.
+          The General Data Protection Regulation (GDPR) is a landmark privacy law from 2018 that
+          created comprehensive rules for how organizations handle personal data.
         </p>
 
-        <h3 className="font-bold mt-6">The Key GDPR Principles in Plain Language</h3>
+        <h3 className="font-bold mt-4">Key GDPR Principles</h3>
         <div className="bg-primary/5 p-4 rounded-lg space-y-2">
           <p>
-            <strong>Transparency:</strong> Companies must clearly tell you what data they&apos;re
-            collecting and why - no more hiding details in lengthy terms and conditions documents.
+            <strong>Transparency:</strong> Companies must clearly explain what data they&apos;re
+            collecting and why.
           </p>
           <p>
-            <strong>Consent:</strong> Organizations need your clear permission before collecting
-            your data. This explains the proliferation of cookie consent notices across websites.
+            <strong>Consent:</strong> Organizations need your permission before collecting your
+            data.
           </p>
           <p>
             <strong>Data Minimization:</strong> Companies should only collect data they genuinely
-            need for their stated purpose. If they&apos;re providing a weather service, they likely
-            don&apos;t need your full biographical information.
+            need.
           </p>
           <p>
-            <strong>Right to Access:</strong> You can request to see all the data a company has
-            about you, and they must comply.
+            <strong>Right to Access:</strong> You can request to see all data a company has about
+            you.
           </p>
           <p>
-            <strong>Right to Be Forgotten:</strong> You can request that companies delete your
-            personal data under certain circumstances.
+            <strong>Right to Be Forgotten:</strong> You can request deletion of your personal data.
           </p>
           <p>
-            <strong>Data Portability:</strong> You can obtain your data from one service and
-            transfer it to another service if you wish.
+            <strong>Data Portability:</strong> You can transfer your data between services.
           </p>
         </div>
 
-        <h3 className="font-bold mt-4">Why GDPR Matters</h3>
+        <h3 className="font-bold mt-4">Why It Matters</h3>
         <p>
-          Even if you&apos;re not in Europe, GDPR has influenced data handling practices globally.
-          Many organizations have adopted GDPR-compliant approaches worldwide because it&apos;s more
-          efficient than maintaining different standards for different regions.
-        </p>
-        <p>
-          The penalties for violating GDPR are substantial - up to €20 million or 4% of global
-          annual revenue, whichever is higher. These meaningful consequences have motivated
-          organizations to take data protection seriously.
+          GDPR has influenced data practices globally with penalties up to €20 million or 4% of
+          global annual revenue, motivating organizations to take data protection seriously.
         </p>
 
-        <h3 className="font-bold mt-4">GDPR in Context</h3>
-
+        <h3 className="font-bold mt-4">GDPR and Blockchain</h3>
         <p>
-          <strong>Before GDPR:</strong>
-          Companies could collect, use, and share your data with minimal disclosure. Your online
-          activities could be tracked extensively, and your information might be sold to third
-          parties without your knowledge.
-        </p>
-        <p>
-          <strong>After GDPR:</strong>
-          Organizations must be clear about data collection, secure your explicit consent, and
-          provide mechanisms for you to control your information. You have the right to know what
-          data is being collected and how it&apos;s being used.
-        </p>
-
-        <h3 className="font-bold mt-4">GDPR and Blockchain: Navigating Complexities</h3>
-        <p>
-          Blockchain technology and GDPR present interesting challenges to each other. Blockchains
-          are designed to be permanent and unchangeable, while GDPR grants people the right to have
-          their data erased. This fundamental tension creates important considerations for
-          blockchain developers and users.
-        </p>
-
-        <h3 className="font-bold mt-4">The Zero-Knowledge Connection</h3>
-        <p>
-          Zero-knowledge proofs, the technology behind privacy-focused networks like Aztec, offer a
-          promising approach for addressing some GDPR concerns in blockchain environments. By
-          allowing transactions to be verified without revealing underlying data, they provide a
-          technical method for preserving privacy while maintaining blockchain functionality.
-        </p>
-
-        <div className="mt-6 p-3 border border-primary/20 rounded-lg">
-          <h4 className="font-semibold flex items-center">
-            <ExternalLink className="w-4 h-4 mr-1" /> Resources for Further Information
-          </h4>
-          <ul className="list-disc pl-5 mt-2 space-y-1 text-sm">
-            <li>
-              <a
-                href="https://gdpr.eu/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Official EU GDPR Portal
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://ico.org.uk/for-organisations/guide-to-data-protection/guide-to-the-general-data-protection-regulation-gdpr/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                ICO&apos;s Guide to GDPR
-              </a>
-            </li>
-
-            <li>
-              <a
-                href="https://fpf.org/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Future of Privacy Forum
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://edpb.europa.eu/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                European Data Protection Board
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <p>
-          While this simulated block explorer demonstrates the concept of privacy in blockchain
-          networks, GDPR represents real-world regulations that govern how actual systems must
-          protect individual privacy rights. The ongoing evolution of privacy laws continues to
-          shape both traditional digital services and blockchain technologies.
+          Blockchain technology and GDPR present challenges, as blockchains are designed to be
+          permanent while GDPR grants the right to data erasure. Zero-knowledge proofs offer a
+          potential solution by allowing transaction verification without revealing underlying data.
         </p>
       </div>
     ),
@@ -414,54 +322,6 @@ const contentMap = {
           <li>Follow up if response deadlines pass</li>
           <li>Know your appeal rights if denied</li>
         </ul>
-
-        <div className="mt-6 p-3 border border-primary/20 rounded-lg">
-          <h4 className="font-semibold flex items-center">
-            <ExternalLink className="w-4 h-4 mr-1" /> Learn More About Information Access
-          </h4>
-          <ul className="list-disc pl-5 mt-2 space-y-1 text-sm">
-            <li>
-              <a
-                href="https://www.access-info.org/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Access Info Europe
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://www.article19.org/resources/article-19-launches-global-principles-freedom-expression-privacy/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Article 19 - Global FOI resources
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://en.unesco.org/themes/access-information"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                UNESCO&apos;s Freedom of Information Portal
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://www.opengovpartnership.org/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Open Government Partnership
-              </a>
-            </li>
-          </ul>
-        </div>
 
         <p className="mt-4">
           Freedom of information laws represent a fundamental shift in government accountability,
