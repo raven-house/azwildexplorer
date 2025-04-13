@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { IBM_Plex_Sans } from 'next/font/google'
 import './globals.css'
 import { Header } from '@/components/Header'
+import { Footer } from '@/components/Footer'
 
 const ibmPlexSans = IBM_Plex_Sans({
   subsets: ['latin'],
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <div className="container mx-auto">
           <Header />
           {children}
+          <Footer />
         </div>
       </body>
     </html>
