@@ -9,7 +9,7 @@ const AZTEC_EXPLORER_URL = 'https://www.aztecexplorer.xyz'
 
 export const Footer = () => {
   return (
-    <footer className="pt-6 md:pt-10 lg:pt-16 pb-10 px-4 md:px-6 lg:px-8 text-sm border-t border-t-primary/10">
+    <footer className="pt-6 pb-10 px-4 md:px-6 lg:px-8 text-sm border-t border-t-primary/10">
       <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <span className="text-muted-foreground">Real Block Explorers:</span>
