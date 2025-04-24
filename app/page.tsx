@@ -35,8 +35,8 @@ const INITIAL_DASHBOARD_DATA = [
   {
     id: '1',
     heading: 'Blocks',
-    value: 1284180,
-    formattedValue: '1,284,180',
+    value: 0,
+    formattedValue: '0',
     increaseRate: 1,
     icon: (
       <Box
@@ -132,6 +132,35 @@ export default function Home() {
 
   const [isPrivacyContentModalOpen, setIsPrivacyContentModalOpen] = useState(false)
   const [privacyContentType, setPrivacyContentType] = useState<PrivacyContentType>('gdpr')
+
+  useEffect(() => {
+    const fetchLatestBlockHeight = async () => {
+      try {
+        const response = await fetch(
+          'https://api.testnet.aztecscan.xyz/v1/temporary-api-key/l2/latest-height'
+        )
+        const data = await response.json()
+
+        setDashboardData((prevData) => {
+          return prevData.map((item) => {
+            if (item.id === '1') {
+              const blockHeight = parseInt(data, 10) || 0
+              return {
+                ...item,
+                value: blockHeight,
+                formattedValue: blockHeight.toLocaleString(),
+              }
+            }
+            return item
+          })
+        })
+      } catch (error) {
+        console.error('Error fetching latest block height:', error)
+      }
+    }
+
+    fetchLatestBlockHeight()
+  }, [])
 
   const updateDashboardItem = (id: string, increment: number) => {
     setDashboardData((prevData) => {
