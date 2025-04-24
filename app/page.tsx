@@ -20,23 +20,56 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog'
-import {
-  INITIAL_TRANSACTION_DATA,
-  MODAL_CASES,
-  PRIVACY_LINKS,
-  RICK_ROLL_LYRICS,
-} from '@/lib/mock-data'
+import { MODAL_CASES, PRIVACY_LINKS, RICK_ROLL_LYRICS } from '@/lib/mock-data'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ReadDisclaimerModal } from '@/components/ReadDisclaimerModal'
 import PrivacyContentModal, { PrivacyContentType } from '@/components/PrivacyContentModal'
 
+// API endpoints
+const API_BASE_URL = 'https://api.testnet.aztecscan.xyz/v1/temporary-api-key'
+const BLOCKS_ENDPOINT = `${API_BASE_URL}/l2/blocks`
+const LATEST_HEIGHT_ENDPOINT = `${API_BASE_URL}/l2/latest-height`
+
+// Interface for block data from API
+interface BlockData {
+  hash: string
+  height: string
+  finalizationStatus: number
+  proposedOnL1: {
+    l1BlockTimestamp: string
+  }
+  header: {
+    globalVariables: {
+      timestamp: number
+      blockNumber: number
+    }
+    contentCommitment: {
+      numTxs: number
+    }
+  }
+  body: {
+    txEffects: Array<{
+      txHash: string
+    }>
+  }
+}
+
+// Interface for transaction from API
+interface Transaction {
+  hash: string
+  birthTimestamp?: number
+  txnStatus?: string
+  txnType?: string
+  age?: string
+}
+
 const INITIAL_DASHBOARD_DATA = [
   {
     id: '1',
     heading: 'Blocks',
-    value: 1284180,
-    formattedValue: '1,284,180',
+    value: 0,
+    formattedValue: '0',
     increaseRate: 1,
     icon: (
       <Box
@@ -49,8 +82,8 @@ const INITIAL_DASHBOARD_DATA = [
   {
     id: '2',
     heading: 'Transactions',
-    value: 164543068,
-    formattedValue: '164,543,068',
+    value: 0,
+    formattedValue: '0',
     increaseRate: 5,
     icon: (
       <ArrowRight
@@ -63,8 +96,8 @@ const INITIAL_DASHBOARD_DATA = [
   {
     id: '3',
     heading: 'Contracts',
-    value: 5465761,
-    formattedValue: '5,465,761',
+    value: 0,
+    formattedValue: '0',
     increaseRate: 2,
     icon: (
       <Code
@@ -76,7 +109,7 @@ const INITIAL_DASHBOARD_DATA = [
   },
 ]
 
-type Transaction = { hash: string; revealed: boolean }
+type RevealableTransaction = { hash: string; revealed: boolean }
 
 const generateRandomTxnHash = (): string => {
   let result = '0x'
@@ -90,7 +123,7 @@ const generateRandomTxnHash = (): string => {
   return result
 }
 
-const generateRandomHashes = (count: number): Transaction[] => {
+const generateRandomHashes = (count: number): RevealableTransaction[] => {
   const hashes = []
   for (let i = 0; i < count; i++) {
     const randomHash = generateRandomTxnHash()
@@ -102,9 +135,11 @@ const generateRandomHashes = (count: number): Transaction[] => {
   return hashes
 }
 
-const getRandomStatus = () => {
-  const statuses = ['PENDING']
-  return statuses[Math.floor(Math.random() * statuses.length)]
+const getTransactionAge = (timestamp: number): string => {
+  const now = Math.floor(Date.now() / 1000)
+  const secondsAgo = now - timestamp
+  // Handle negative values (in case server time is ahead of local time)
+  return formatTime(secondsAgo > 0 ? secondsAgo : 1)
 }
 
 const getRandomTxnType = () => {
@@ -112,36 +147,119 @@ const getRandomTxnType = () => {
   return types[Math.floor(Math.random() * types.length)]
 }
 
-const getRandomInterval = (min: number, max: number) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
-const getNewTransactionAge = () => {
-  return 'just now'
-}
-
 export default function Home() {
-  const [transactions, setTransactions] = useState(INITIAL_TRANSACTION_DATA)
+  const [transactions, setTransactions] = useState<Transaction[]>([])
   const [dashboardData, setDashboardData] = useState(INITIAL_DASHBOARD_DATA)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [counter, setCounter] = useState(0)
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [modalCases, setModalCases] = useState<Array<any>>([])
-  const [transactionHashes, setTransactionHashes] = useState<Transaction[]>([])
+  const [transactionHashes, setTransactionHashes] = useState<RevealableTransaction[]>([])
 
   const [isPrivacyContentModalOpen, setIsPrivacyContentModalOpen] = useState(false)
   const [privacyContentType, setPrivacyContentType] = useState<PrivacyContentType>('gdpr')
 
-  const updateDashboardItem = (id: string, increment: number) => {
+  // Function to fetch latest block height
+  const fetchLatestBlockHeight = async () => {
+    try {
+      const response = await fetch(LATEST_HEIGHT_ENDPOINT)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch latest block height: ${response.status}`)
+      }
+      // The API returns just the height as a string
+      const data = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error fetching latest block height:', error)
+      setError('Failed to fetch latest block height. Using fallback data.')
+      return null
+    }
+  }
+
+  // Function to fetch blocks from API
+  const fetchBlocks = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch(BLOCKS_ENDPOINT)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch blocks: ${response.status}`)
+      }
+      const data = await response.json()
+
+      // Update dashboard data with real values
+      updateDashboardWithRealData(data)
+
+      // Process transactions from blocks
+      const txs = processTransactionsFromBlocks(data)
+      setTransactions(txs)
+
+      setLoading(false)
+    } catch (error) {
+      console.error('Error fetching blocks:', error)
+      setError('Failed to fetch blocks. Using fallback data.')
+      setLoading(false)
+    }
+  }
+
+  // Function to process transactions from blocks
+  const processTransactionsFromBlocks = (blocks: BlockData[]) => {
+    // Extract and transform transactions from blocks
+    const processedTxs: Transaction[] = []
+
+    // For demonstration, we'll create mock transactions based on block data
+    // In a real implementation, you would extract actual transaction data from the blocks
+    blocks.slice(0, 7).forEach((block) => {
+      const tx: Transaction = {
+        hash: block.hash, // Using block hash as transaction hash for demo
+        txnStatus: 'PENDING',
+        txnType: getRandomTxnType(),
+        age: getTransactionAge(block.timestamp),
+      }
+      processedTxs.push(tx)
+    })
+
+    return processedTxs
+  }
+
+  // Function to update dashboard with real data
+  const updateDashboardWithRealData = (blocks: BlockData[]) => {
+    // Calculate total transactions from the blocks
+    const totalTxs = blocks.reduce((sum, block) => {
+      const numTxs = block.header?.contentCommitment?.numTxs || 0
+      return sum + numTxs
+    }, 0)
+
+    // Get the height of the latest block or use the length of blocks
+    const latestBlockHeight = blocks.length > 0 ? parseInt(blocks[0].height) : blocks.length
+
+    // For contracts, we'll keep using the mock data approach since the API doesn't
+    // directly provide this information
+    const contractsCount = 5465761 // Keeping this static as in the original data
+
     setDashboardData((prevData) => {
       return prevData.map((item) => {
-        if (item.id === id) {
-          const newValue = item.value + increment
+        if (item.id === '1') {
+          // Blocks
           return {
             ...item,
-            value: newValue,
-            formattedValue: newValue.toLocaleString(),
+            value: latestBlockHeight,
+            formattedValue: latestBlockHeight.toLocaleString(),
+          }
+        } else if (item.id === '2') {
+          // Transactions
+          return {
+            ...item,
+            value: totalTxs,
+            formattedValue: totalTxs.toLocaleString(),
+          }
+        } else if (item.id === '3') {
+          // Contracts
+          return {
+            ...item,
+            value: contractsCount,
+            formattedValue: contractsCount.toLocaleString(),
           }
         }
         return item
@@ -149,67 +267,47 @@ export default function Home() {
     })
   }
 
+  // Function to update dashboard with real-time data
+  const updateDashboardWithLiveData = async () => {
+    const latestHeight = await fetchLatestBlockHeight()
+    if (latestHeight) {
+      setDashboardData((prevData) => {
+        return prevData.map((item) => {
+          if (item.id === '1') {
+            // Blocks
+            return {
+              ...item,
+              value: latestHeight,
+              formattedValue: latestHeight.toLocaleString(),
+            }
+          }
+          return item
+        })
+      })
+    }
+  }
+
+  // Initial data fetch
   useEffect(() => {
-    const counterIntervals = dashboardData.map((item) => {
-      let minInterval, maxInterval
+    fetchBlocks()
 
-      switch (item.id) {
-        case '1': // Blocks
-          minInterval = 3000
-          maxInterval = 6000
-          break
-        case '2': // Transactions
-          minInterval = 1000
-          maxInterval = 3000
-          break
-        case '3': // Contracts
-          minInterval = 5000
-          maxInterval = 10000
-          break
-        default:
-          minInterval = 5000
-          maxInterval = 10000
-      }
-
-      const intervalId = setInterval(() => {
-        const randomMultiplier = Math.random() < 0.2 ? Math.floor(Math.random() * 5) + 2 : 1
-        const increment = item.increaseRate * randomMultiplier
-        updateDashboardItem(item.id, increment)
-      }, getRandomInterval(minInterval, maxInterval))
-
-      return intervalId
-    })
-
-    const txnInterval = setInterval(() => {
-      addNewTransaction()
-    }, 20000)
+    // Set up polling for complete data refresh
+    const pollInterval = setInterval(() => {
+      fetchBlocks() // Fetch all block data to update everything
+    }, 2000) // Poll every 20 seconds to match the UI update interval
 
     return () => {
-      counterIntervals.forEach((intervalId) => clearInterval(intervalId))
-      clearInterval(txnInterval)
+      clearInterval(pollInterval)
     }
   }, [])
 
-  const addNewTransaction = () => {
-    const newTransaction = {
-      txnHash: generateRandomTxnHash(),
-      txnStatus: getRandomStatus(),
-      txnType: getRandomTxnType(),
-      age: getNewTransactionAge(),
-    }
-
-    setTransactions((prevTransactions) => {
-      const updatedTransactions = [newTransaction, ...prevTransactions]
-      return updatedTransactions.slice(0, 7)
-    })
-
-    setCounter((prevCounter) => prevCounter + 1)
-  }
-
+  // Update transaction ages periodically
   useEffect(() => {
     const ageInterval = setInterval(() => {
       setTransactions((prevTransactions) =>
         prevTransactions.map((txn) => {
+          if (!txn.age) return txn
+
           if (txn.age === 'just now') {
             return {
               ...txn,
@@ -241,6 +339,7 @@ export default function Home() {
     }
   }, [])
 
+  // Auto-retry logic for failed reveal attempts
   useEffect(() => {
     let autoRetryInterval: NodeJS.Timeout | undefined
 
@@ -305,14 +404,35 @@ export default function Home() {
     )
   }
 
+  const handleRefresh = () => {
+    fetchBlocks()
+  }
+
   return (
     <main className="py-6 flex flex-col gap-4 md:gap-12 px-4 md:px-6 lg:px-8">
-      <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-bold text-center">This is not a real block explorer</h1>
-        <ReadDisclaimerModal />
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-center">This is not a real block explorer</h1>
+          <ReadDisclaimerModal />
+        </div>
+        <Button
+          onClick={handleRefresh}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-1"
+        >
+          <RefreshCw size={16} /> Refresh
+        </Button>
       </div>
+
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+          {error}
+        </div>
+      )}
+
       <section>
-        <div className="grid  grid-cols-2 xl:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 xl:grid-cols-3 gap-3">
           {dashboardData.map((data) => {
             return (
               <Card
@@ -324,7 +444,7 @@ export default function Home() {
                   <CardHeader className="p-3 md:p-4">
                     <CardTitle className="text-sm md:text-lg">{data.heading}</CardTitle>
                     <CardDescription className="text-lg md:text-2xl">
-                      {data.formattedValue}
+                      {loading ? 'Loading...' : data.formattedValue}
                     </CardDescription>
                   </CardHeader>
                 </div>
@@ -337,42 +457,59 @@ export default function Home() {
       <section>
         <h2 className="text-primary font-bold mb-4 text-lg md:text-xl">Latest Transactions</h2>
         <div className="overflow-x-auto -mx-4 px-4">
-          <Table className="transaction-table">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">Transaction Hash</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Age</TableHead>
-                <TableHead className="text-right">Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {transactions.map((txn, index) => (
-                <TableRow
-                  key={txn.txnHash}
-                  className={counter > 0 && index === 0 ? 'transaction-highlight' : ''}
-                  style={{
-                    transitionDelay: `${index * 50}ms`,
-                  }}
-                >
-                  <TableCell className="font-medium">
-                    <span className="text-sm md:text-base">{shortenTxnHash(txn.txnHash)}</span>
-                  </TableCell>
-                  <TableCell>{txn.txnStatus}</TableCell>
-                  <TableCell>{txn.age}</TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      size="sm"
-                      onClick={handleRevealClick}
-                      className="text-xs md:text-sm"
-                    >
-                      Reveal
-                    </Button>
-                  </TableCell>
+          {loading ? (
+            <div className="flex justify-center items-center h-40">
+              <p>Loading transaction data...</p>
+            </div>
+          ) : (
+            <Table className="transaction-table">
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">Transaction Hash</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Age</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {transactions.length > 0 ? (
+                  transactions.map((txn, index) => (
+                    <TableRow
+                      key={txn.hash}
+                      className={counter > 0 && index === 0 ? 'transaction-highlight' : ''}
+                      style={{
+                        transitionDelay: `${index * 50}ms`,
+                      }}
+                    >
+                      <TableCell className="font-medium">
+                        <span className="text-sm md:text-base">{shortenTxnHash(txn.hash)}</span>
+                      </TableCell>
+                      <TableCell>{txn.txnStatus || 'PENDING'}</TableCell>
+                      <TableCell>{txn.age || 'Unknown'}</TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          size="sm"
+                          onClick={handleRevealClick}
+                          className="text-xs md:text-sm"
+                        >
+                          Reveal
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={4}
+                      className="text-center py-8"
+                    >
+                      No transactions found
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          )}
         </div>
       </section>
 
