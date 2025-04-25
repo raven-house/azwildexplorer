@@ -49,8 +49,8 @@ const INITIAL_DASHBOARD_DATA = [
   {
     id: '2',
     heading: 'Transactions',
-    value: 164543068,
-    formattedValue: '164,543,068',
+    value: 0,
+    formattedValue: '0',
     increaseRate: 5,
     icon: (
       <ArrowRight
@@ -160,6 +160,43 @@ export default function Home() {
     }
 
     fetchLatestBlockHeight()
+  }, [])
+
+  useEffect(() => {
+    const fetchTotalTransactions = async () => {
+      try {
+        const response = await fetch(
+          'https://api.testnet.aztecscan.xyz/v1/temporary-api-key/l2/stats/total-tx-effects'
+        )
+
+        // Check if response is ok
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`)
+        }
+
+        const data = await response.text()
+        const totalTransactions = parseInt(data, 10)
+
+        if (!isNaN(totalTransactions)) {
+          setDashboardData((prevData) => {
+            return prevData.map((item) => {
+              if (item.id === '2') {
+                return {
+                  ...item,
+                  value: totalTransactions,
+                  formattedValue: totalTransactions.toLocaleString(),
+                }
+              }
+              return item
+            })
+          })
+        }
+      } catch (error) {
+        console.error('Error fetching total transactions:', error)
+      }
+    }
+
+    fetchTotalTransactions()
   }, [])
 
   const updateDashboardItem = (id: string, increment: number) => {
