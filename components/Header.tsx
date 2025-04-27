@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import ReadDisclaimerModal from './ReadDisclaimerModal'
 
 export function Header() {
   return (
@@ -13,6 +14,8 @@ export function Header() {
         </Link>
 
         <nav className="flex items-center gap-6">
+          <ReadDisclaimerModal />
+
           <Button
             variant="outline"
             className="rounded-md border"

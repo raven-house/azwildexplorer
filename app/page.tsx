@@ -23,7 +23,6 @@ import {
 import { MODAL_CASES, PRIVACY_LINKS, RICK_ROLL_LYRICS } from '@/lib/mock-data'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ReadDisclaimerModal } from '@/components/ReadDisclaimerModal'
 import PrivacyContentModal, { PrivacyContentType } from '@/components/PrivacyContentModal'
 import { TransactionsSkeleton } from '@/components/TransactionsSkeleton'
 
@@ -328,9 +327,6 @@ export default function Home() {
 
   return (
     <main className="py-6 flex flex-col gap-4 md:gap-12 px-4 md:px-6 lg:px-8">
-      <div className="flex items-center gap-2">
-        <ReadDisclaimerModal />
-      </div>
       <section>
         <div className="grid grid-cols-2 xl:grid-cols-3 gap-3">
           {dashboardData.map((data) => {
