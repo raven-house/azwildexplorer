@@ -20,16 +20,12 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog'
-import {
-  INITIAL_TRANSACTION_DATA,
-  MODAL_CASES,
-  PRIVACY_LINKS,
-  RICK_ROLL_LYRICS,
-} from '@/lib/mock-data'
+import { MODAL_CASES, PRIVACY_LINKS, RICK_ROLL_LYRICS } from '@/lib/mock-data'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ReadDisclaimerModal } from '@/components/ReadDisclaimerModal'
 import PrivacyContentModal, { PrivacyContentType } from '@/components/PrivacyContentModal'
+import { TransactionsSkeleton } from '@/components/TransactionsSkeleton'
 
 const INITIAL_DASHBOARD_DATA = [
   {
@@ -73,7 +69,18 @@ const INITIAL_DASHBOARD_DATA = [
   },
 ]
 
-type Transaction = { hash: string; revealed: boolean }
+type Transaction = {
+  hash: string
+  revealed: boolean
+}
+
+interface TxnData {
+  txnHash: string
+  txnStatus: string
+  txnType: string
+  age: string
+  blockHeight?: string
+}
 
 const generateRandomTxnHash = (): string => {
   let result = '0x'
@@ -100,7 +107,7 @@ const generateRandomHashes = (count: number): Transaction[] => {
 }
 
 export default function Home() {
-  const [transactions, setTransactions] = useState(INITIAL_TRANSACTION_DATA)
+  const [transactions, setTransactions] = useState<TxnData[]>([])
   const [dashboardData, setDashboardData] = useState(INITIAL_DASHBOARD_DATA)
   const [counter, setCounter] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
@@ -113,11 +120,11 @@ export default function Home() {
   const [isPrivacyContentModalOpen, setIsPrivacyContentModalOpen] = useState(false)
   const [privacyContentType, setPrivacyContentType] = useState<PrivacyContentType>('gdpr')
 
-  // Fetch transactions from our API route
+  // Fetch transactions from our new blocks API route
   const fetchTransactions = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch('/api/transactions')
+      const response = await fetch('/api/blocks')
 
       if (response.ok) {
         const data = await response.json()
@@ -406,32 +413,36 @@ export default function Home() {
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {transactions.map((txn, index) => (
-                <TableRow
-                  key={txn.txnHash}
-                  className={counter > 0 && index === 0 ? 'transaction-highlight' : ''}
-                  style={{
-                    transitionDelay: `${index * 50}ms`,
-                  }}
-                >
-                  <TableCell className="font-medium">
-                    <span className="text-sm md:text-base">{shortenTxnHash(txn.txnHash)}</span>
-                  </TableCell>
-                  <TableCell>{txn.txnStatus}</TableCell>
-                  <TableCell>{txn.age}</TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      size="sm"
-                      onClick={handleRevealClick}
-                      className="text-xs md:text-sm"
-                    >
-                      Reveal
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+            {isLoading ? (
+              <TransactionsSkeleton />
+            ) : (
+              <TableBody>
+                {transactions.map((txn, index) => (
+                  <TableRow
+                    key={txn.txnHash}
+                    className={counter > 0 && index === 0 ? 'transaction-highlight' : ''}
+                    style={{
+                      transitionDelay: `${index * 50}ms`,
+                    }}
+                  >
+                    <TableCell className="font-medium">
+                      <span className="text-sm md:text-base">{shortenTxnHash(txn.txnHash)}</span>
+                    </TableCell>
+                    <TableCell>{txn.txnStatus}</TableCell>
+                    <TableCell>{txn.age}</TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        size="sm"
+                        onClick={handleRevealClick}
+                        className="text-xs md:text-sm"
+                      >
+                        Reveal
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            )}
           </Table>
         </div>
       </section>
