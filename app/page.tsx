@@ -62,9 +62,9 @@ const INITIAL_DASHBOARD_DATA = [
   },
   {
     id: '3',
-    heading: 'Contracts',
-    value: 5465761,
-    formattedValue: '5,465,761',
+    heading: 'Contract Classes',
+    value: 0,
+    formattedValue: '0',
     increaseRate: 2,
     icon: (
       <Code
@@ -216,6 +216,42 @@ export default function Home() {
     }
 
     fetchTotalTransactions()
+  }, [])
+
+  useEffect(() => {
+    const fetchTotalContractClasses = async () => {
+      try {
+        const response = await fetch(
+          'https://api.testnet.aztecscan.xyz/v1/temporary-api-key/l2/stats/total-contracts'
+        )
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`)
+        }
+
+        const data = await response.text()
+        const totalContractClasses = parseInt(data, 10)
+
+        if (!isNaN(totalContractClasses)) {
+          setDashboardData((prevData) => {
+            return prevData.map((item) => {
+              if (item.id === '3') {
+                return {
+                  ...item,
+                  value: totalContractClasses,
+                  formattedValue: totalContractClasses.toLocaleString(),
+                }
+              }
+              return item
+            })
+          })
+        }
+      } catch (error) {
+        console.error('Error fetching total contract classes:', error)
+      }
+    }
+
+    fetchTotalContractClasses()
   }, [])
 
   const updateDashboardItem = (id: string, increment: number) => {
