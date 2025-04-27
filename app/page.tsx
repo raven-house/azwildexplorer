@@ -102,28 +102,11 @@ const generateRandomHashes = (count: number): Transaction[] => {
   return hashes
 }
 
-const getRandomStatus = () => {
-  const statuses = ['PENDING']
-  return statuses[Math.floor(Math.random() * statuses.length)]
-}
-
-const getRandomTxnType = () => {
-  const types = ['INVOKE_FUNCTION', 'DEPLOY', 'TRANSFER', 'APPROVE', 'SWAP']
-  return types[Math.floor(Math.random() * types.length)]
-}
-
-const getRandomInterval = (min: number, max: number) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
-const getNewTransactionAge = () => {
-  return 'just now'
-}
-
 export default function Home() {
   const [transactions, setTransactions] = useState(INITIAL_TRANSACTION_DATA)
   const [dashboardData, setDashboardData] = useState(INITIAL_DASHBOARD_DATA)
   const [counter, setCounter] = useState(0)
+  const [isLoading, setIsLoading] = useState(false)
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -132,6 +115,42 @@ export default function Home() {
 
   const [isPrivacyContentModalOpen, setIsPrivacyContentModalOpen] = useState(false)
   const [privacyContentType, setPrivacyContentType] = useState<PrivacyContentType>('gdpr')
+
+  // Fetch transactions from our API route
+  const fetchTransactions = async () => {
+    try {
+      setIsLoading(true)
+      const response = await fetch('/api/transactions')
+
+      if (response.ok) {
+        const data = await response.json()
+
+        // Only update if we got data
+        if (data && data.length > 0) {
+          setTransactions(data)
+          setCounter((prev) => prev + 1) // Increment counter to trigger highlight animation
+        }
+      } else {
+        console.error('Failed to fetch transactions:', response.status)
+      }
+    } catch (error) {
+      console.error('Error fetching transactions:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchTransactions()
+
+    const txnInterval = setInterval(() => {
+      fetchTransactions()
+    }, 20000)
+
+    return () => {
+      clearInterval(txnInterval)
+    }
+  }, [])
 
   useEffect(() => {
     const fetchLatestBlockHeight = async () => {
@@ -246,30 +265,13 @@ export default function Home() {
       return intervalId
     })
 
-    const txnInterval = setInterval(() => {
-      addNewTransaction()
-    }, 20000)
-
     return () => {
       counterIntervals.forEach((intervalId) => clearInterval(intervalId))
-      clearInterval(txnInterval)
     }
   }, [])
 
-  const addNewTransaction = () => {
-    const newTransaction = {
-      txnHash: generateRandomTxnHash(),
-      txnStatus: getRandomStatus(),
-      txnType: getRandomTxnType(),
-      age: getNewTransactionAge(),
-    }
-
-    setTransactions((prevTransactions) => {
-      const updatedTransactions = [newTransaction, ...prevTransactions]
-      return updatedTransactions.slice(0, 7)
-    })
-
-    setCounter((prevCounter) => prevCounter + 1)
+  const getRandomInterval = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min
   }
 
   useEffect(() => {
@@ -371,6 +373,10 @@ export default function Home() {
     )
   }
 
+  const handleRefresh = () => {
+    fetchTransactions()
+  }
+
   return (
     <main className="py-6 flex flex-col gap-4 md:gap-12 px-4 md:px-6 lg:px-8">
       <div className="flex items-center gap-2">
@@ -378,7 +384,7 @@ export default function Home() {
         <ReadDisclaimerModal />
       </div>
       <section>
-        <div className="grid  grid-cols-2 xl:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 xl:grid-cols-3 gap-3">
           {dashboardData.map((data) => {
             return (
               <Card
@@ -401,7 +407,19 @@ export default function Home() {
       </section>
 
       <section>
-        <h2 className="text-primary font-bold mb-4 text-lg md:text-xl">Latest Transactions</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-primary font-bold text-lg md:text-xl">Latest Transactions</h2>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={isLoading}
+            className="flex items-center gap-1"
+          >
+            <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+            {isLoading ? 'Loading...' : 'Refresh'}
+          </Button>
+        </div>
         <div className="overflow-x-auto -mx-4 px-4">
           <Table className="transaction-table">
             <TableHeader>
