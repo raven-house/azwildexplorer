@@ -37,7 +37,6 @@ const INITIAL_DASHBOARD_DATA = [
     heading: 'Blocks',
     value: 0,
     formattedValue: '0',
-    increaseRate: 1,
     icon: (
       <Box
         size={24}
@@ -51,7 +50,6 @@ const INITIAL_DASHBOARD_DATA = [
     heading: 'Transactions',
     value: 0,
     formattedValue: '0',
-    increaseRate: 5,
     icon: (
       <ArrowRight
         size={24}
@@ -65,7 +63,6 @@ const INITIAL_DASHBOARD_DATA = [
     heading: 'Contract Classes',
     value: 0,
     formattedValue: '0',
-    increaseRate: 2,
     icon: (
       <Code
         size={24}
@@ -253,62 +250,6 @@ export default function Home() {
 
     fetchTotalContractClasses()
   }, [])
-
-  const updateDashboardItem = (id: string, increment: number) => {
-    setDashboardData((prevData) => {
-      return prevData.map((item) => {
-        if (item.id === id) {
-          const newValue = item.value + increment
-          return {
-            ...item,
-            value: newValue,
-            formattedValue: newValue.toLocaleString(),
-          }
-        }
-        return item
-      })
-    })
-  }
-
-  useEffect(() => {
-    const counterIntervals = dashboardData.map((item) => {
-      let minInterval, maxInterval
-
-      switch (item.id) {
-        case '1': // Blocks
-          minInterval = 3000
-          maxInterval = 6000
-          break
-        case '2': // Transactions
-          minInterval = 1000
-          maxInterval = 3000
-          break
-        case '3': // Contracts
-          minInterval = 5000
-          maxInterval = 10000
-          break
-        default:
-          minInterval = 5000
-          maxInterval = 10000
-      }
-
-      const intervalId = setInterval(() => {
-        const randomMultiplier = Math.random() < 0.2 ? Math.floor(Math.random() * 5) + 2 : 1
-        const increment = item.increaseRate * randomMultiplier
-        updateDashboardItem(item.id, increment)
-      }, getRandomInterval(minInterval, maxInterval))
-
-      return intervalId
-    })
-
-    return () => {
-      counterIntervals.forEach((intervalId) => clearInterval(intervalId))
-    }
-  }, [])
-
-  const getRandomInterval = (min: number, max: number) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min
-  }
 
   useEffect(() => {
     const ageInterval = setInterval(() => {
