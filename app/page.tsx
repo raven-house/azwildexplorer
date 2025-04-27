@@ -11,7 +11,7 @@ import {
   TableCell,
   Table,
 } from '@/components/ui/table'
-import { formatTime, parseTimeToSeconds, shortenTxnHash } from '@/lib/utils'
+import { shortenTxnHash } from '@/lib/utils'
 import { ArrowRight, Box, Code, RefreshCw } from 'lucide-react'
 import {
   Dialog,
@@ -256,41 +256,6 @@ export default function Home() {
     }
 
     fetchTotalContractClasses()
-  }, [])
-
-  useEffect(() => {
-    const ageInterval = setInterval(() => {
-      setTransactions((prevTransactions) =>
-        prevTransactions.map((txn) => {
-          if (txn.age === 'just now') {
-            return {
-              ...txn,
-              age: '1m ago',
-            }
-          }
-
-          const currentAgeInSeconds = parseTimeToSeconds(txn.age)
-          let newAgeInSeconds = currentAgeInSeconds
-
-          if (currentAgeInSeconds < 300) {
-            newAgeInSeconds = currentAgeInSeconds + 60
-          } else if (currentAgeInSeconds < 3600) {
-            newAgeInSeconds = currentAgeInSeconds + 120
-          } else {
-            newAgeInSeconds = currentAgeInSeconds + 300
-          }
-
-          return {
-            ...txn,
-            age: formatTime(newAgeInSeconds),
-          }
-        })
-      )
-    }, 15000)
-
-    return () => {
-      clearInterval(ageInterval)
-    }
   }, [])
 
   useEffect(() => {
