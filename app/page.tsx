@@ -369,7 +369,7 @@ export default function Home() {
               >
                 <div className="flex items-center px-3 md:px-6">
                   <div>{data.icon}</div>
-                  <CardHeader className="p-3 md:p-4">
+                  <CardHeader className="p-3 md:p-4 w-full">
                     <CardTitle className="text-sm md:text-lg">{data.heading}</CardTitle>
                     <CardDescription className="text-lg md:text-2xl">
                       {data.formattedValue}
