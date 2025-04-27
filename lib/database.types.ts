@@ -202,6 +202,33 @@ export type Database = {
           },
         ]
       }
+      aztec_transactions: {
+        Row: {
+          age: string
+          created_at: string
+          id: number
+          txn_hash: string
+          txn_status: string
+          txn_type: string
+        }
+        Insert: {
+          age: string
+          created_at?: string
+          id?: number
+          txn_hash: string
+          txn_status: string
+          txn_type: string
+        }
+        Update: {
+          age?: string
+          created_at?: string
+          id?: number
+          txn_hash?: string
+          txn_status?: string
+          txn_type?: string
+        }
+        Relationships: []
+      }
       fitrace_signup_emails: {
         Row: {
           created_at: string
