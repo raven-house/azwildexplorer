@@ -387,7 +387,7 @@ export default function Home() {
                     }}
                   >
                     <TableCell className="font-medium">
-                      <span className="text-sm md:text-base">{shortenTxnHash(txn.txnHash)}</span>
+                      <span className="text-sm md:text-base">{txn.txnHash}</span>
                     </TableCell>
                     <TableCell>{txn.txnStatus}</TableCell>
                     <TableCell>{txn.age}</TableCell>

@@ -31,9 +31,9 @@ export const ReadDisclaimerModal = () => {
         <div className="py-4 space-y-4 max-h-[60vh] overflow-y-auto">
           <div className="bg-primary/5 p-4 rounded-lg border-l-4 border-primary">
             <p className="text-sm">
-              This is a <strong>simulated Aztec block explorer</strong> created for entertainment
-              and educational purposes. None of the transactions, blocks, or data shown here are
-              real.
+              This is an <strong>Aztec blockchain explorer</strong> that displays real transactions
+              on the Aztec network. The transactions, blocks, and data shown here reflect actual
+              network activity.
             </p>
           </div>
 
@@ -43,9 +43,9 @@ export const ReadDisclaimerModal = () => {
           </h3>
           <p className="text-sm pl-6">
             Aztec is a privacy-focused Layer 2 solution that uses zero-knowledge proofs to enable
-            private transactions on Ethereum. In a real Aztec network, transaction details would be
-            protected by cryptography, which is why our &quot;Reveal&quot; buttons respond with
-            humorous privacy reminders.
+            private transactions on Ethereum. Due to Aztec&apos;s cryptographic privacy features,
+            transaction details are protected, which is why our &quot;Reveal&quot; buttons may not
+            display complete information.
           </p>
 
           <h3 className="font-bold text-sm flex items-center">
@@ -63,7 +63,7 @@ export const ReadDisclaimerModal = () => {
               <span className="w-4 h-4 mr-2 mt-1 text-xs bg-primary text-white rounded-full flex items-center justify-center">
                 2
               </span>
-              <span>Learn about zero-knowledge technology in a fun way</span>
+              <span>Understand how zero-knowledge technology works in practice</span>
             </li>
             <li className="flex items-start">
               <span className="w-4 h-4 mr-2 mt-1 text-xs bg-primary text-white rounded-full flex items-center justify-center">
@@ -78,10 +78,10 @@ export const ReadDisclaimerModal = () => {
 
           <div className="bg-primary/10 p-4 rounded-lg text-sm">
             <p>
-              New &quot;transactions&quot; appear every 20 seconds to simulate network activity, but
-              remember - it&apos;s all fictional! Enjoy exploring the Aztec blockchain, and
-              don&apos;t take those &quot;Reveal&quot; button responses too personally. After all,
-              privacy is the whole point!
+              New transactions appear as they occur on the network. Due to the privacy-preserving
+              nature of Aztec, transaction details remain confidential and protected by
+              cryptography. This explorer provides a window into network activity while respecting
+              the fundamental privacy guarantees that make Aztec unique.
             </p>
           </div>
         </div>
