@@ -9,7 +9,7 @@ export const TransactionsSkeleton = () => {
         .map((txn, index) => (
           <TableRow key={`skeleton ${index}`}>
             <TableCell className="font-medium">
-              <Skeleton className="w-[107px] h-4" />
+              <Skeleton className="w-[614px] h-4" />
             </TableCell>
             <TableCell>
               <Skeleton className="w-16 h-4" />

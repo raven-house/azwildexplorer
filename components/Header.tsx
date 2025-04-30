@@ -9,7 +9,7 @@ export function Header() {
           href="/"
           className="flex items-center gap-2"
         >
-          <span className="text-2xl font-bold text-primary">SOMETHING.WTF</span>
+          <span className="text-2xl font-bold text-primary">SOMETHING HAPPENED ON AZTEC</span>
         </Link>
 
         <nav className="flex items-center gap-6">

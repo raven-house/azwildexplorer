@@ -3,6 +3,7 @@ import { IBM_Plex_Sans } from 'next/font/google'
 import './globals.css'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
+import { Toaster } from '@/components/ui/sonner'
 
 const ibmPlexSans = IBM_Plex_Sans({
   subsets: ['latin'],
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           {children}
           <Footer />
         </div>
+        <Toaster />
       </body>
     </html>
   )

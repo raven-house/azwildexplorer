@@ -12,7 +12,7 @@ import {
   Table,
 } from '@/components/ui/table'
 import { shortenTxnHash } from '@/lib/utils'
-import { ArrowRight, Box, Code, RefreshCw } from 'lucide-react'
+import { ArrowRight, Box, Code, RefreshCw, Search } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -25,6 +25,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import PrivacyContentModal, { PrivacyContentType } from '@/components/PrivacyContentModal'
 import { TransactionsSkeleton } from '@/components/TransactionsSkeleton'
+import { toast } from 'sonner'
 
 const INITIAL_DASHBOARD_DATA = [
   {
@@ -119,7 +120,16 @@ export default function Home() {
   const [isPrivacyContentModalOpen, setIsPrivacyContentModalOpen] = useState(false)
   const [privacyContentType, setPrivacyContentType] = useState<PrivacyContentType>('gdpr')
 
-  // Fetch transactions from our new blocks API route
+  useEffect(() => {
+    setTimeout(() => {
+      toast.info('Try to find your transaction here!', {
+        icon: <Search className="h-5 w-5 text-blue-500" />,
+        duration: 7000,
+      })
+    }, 1500)
+  }, [])
+
+  // Fetch transactions from our API route
   const fetchTransactions = async () => {
     try {
       setIsLoading(true)
@@ -135,9 +145,15 @@ export default function Home() {
         }
       } else {
         console.error('Failed to fetch transactions:', response.status)
+        toast.error("Couldn't fetch transactions", {
+          description: 'There was an error loading the latest transactions',
+        })
       }
     } catch (error) {
       console.error('Error fetching transactions:', error)
+      toast.error('Network error', {
+        description: "Couldn't connect to blockchain explorer service",
+      })
     } finally {
       setIsLoading(false)
     }
