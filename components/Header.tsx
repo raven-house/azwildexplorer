@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import ReadDisclaimerModal from './ReadDisclaimerModal'
+import Image from 'next/image'
 
 export function Header() {
   return (
@@ -9,7 +10,13 @@ export function Header() {
           href="/"
           className="flex items-center gap-2"
         >
-          <span className="text-2xl font-bold text-primary">SOMETHING HAPPENED ON AZTEC</span>
+          <Image
+            src="/logo.png"
+            width={70}
+            height={70}
+            alt="logo"
+          />
+          <span className="text-2xl font-bold text-primary">SomethingHappened</span>
         </Link>
 
         <nav className="flex items-center gap-6">

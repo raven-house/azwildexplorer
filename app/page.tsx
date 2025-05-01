@@ -119,6 +119,7 @@ export default function Home() {
 
   const [isPrivacyContentModalOpen, setIsPrivacyContentModalOpen] = useState(false)
   const [privacyContentType, setPrivacyContentType] = useState<PrivacyContentType>('gdpr')
+  const [fromBlock, setFromBlock] = useState<number | null>(null)
 
   useEffect(() => {
     setTimeout(() => {
@@ -133,14 +134,15 @@ export default function Home() {
   const fetchTransactions = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch('/api/blocks')
+      const response = await fetch(`/api/blocks?till_block=${fromBlock ?? 0}`)
 
       if (response.ok) {
-        const data = await response.json()
+        const { transactions, finalFormBlock } = (await response.json()) || {}
 
         // Only update if we got data
-        if (data && data.length > 0) {
-          setTransactions(data)
+        if (transactions && transactions.length > 0) {
+          setFromBlock(finalFormBlock)
+          setTransactions(transactions)
           setCounter((prev) => prev + 1) // Increment counter to trigger highlight animation
         }
       } else {
