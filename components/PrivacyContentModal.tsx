@@ -7,9 +7,9 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { Shield, BookOpen, FileText, ExternalLink } from 'lucide-react'
+import { BookOpen, FileText, ExternalLink } from 'lucide-react'
 
-export type PrivacyContentType = 'gdpr' | 'constitutional' | 'foi'
+export type PrivacyContentType = 'constitutional' | 'foi'
 
 type PrivacyContentProps = {
   isOpen: boolean
@@ -18,58 +18,58 @@ type PrivacyContentProps = {
 }
 
 const contentMap = {
-  gdpr: {
-    title: 'General Data Protection Regulation (GDPR)',
-    icon: <Shield className="w-5 h-5 mr-2 text-primary" />,
-    content: (
-      <div className="space-y-4">
-        <h2 className="text-lg font-bold">What&apos;s GDPR?</h2>
-        <p>
-          The General Data Protection Regulation (GDPR) is a landmark privacy law from 2018 that
-          created comprehensive rules for how organizations handle personal data.
-        </p>
+  // gdpr: {
+  //   title: 'General Data Protection Regulation (GDPR)',
+  //   icon: <Shield className="w-5 h-5 mr-2 text-primary" />,
+  //   content: (
+  //     <div className="space-y-4">
+  //       <h2 className="text-lg font-bold">What&apos;s GDPR?</h2>
+  //       <p>
+  //         The General Data Protection Regulation (GDPR) is a landmark privacy law from 2018 that
+  //         created comprehensive rules for how organizations handle personal data.
+  //       </p>
 
-        <h3 className="font-bold mt-4">Key GDPR Principles</h3>
-        <div className="bg-primary/5 p-4 rounded-lg space-y-2">
-          <p>
-            <strong>Transparency:</strong> Companies must clearly explain what data they&apos;re
-            collecting and why.
-          </p>
-          <p>
-            <strong>Consent:</strong> Organizations need your permission before collecting your
-            data.
-          </p>
-          <p>
-            <strong>Data Minimization:</strong> Companies should only collect data they genuinely
-            need.
-          </p>
-          <p>
-            <strong>Right to Access:</strong> You can request to see all data a company has about
-            you.
-          </p>
-          <p>
-            <strong>Right to Be Forgotten:</strong> You can request deletion of your personal data.
-          </p>
-          <p>
-            <strong>Data Portability:</strong> You can transfer your data between services.
-          </p>
-        </div>
+  //       <h3 className="font-bold mt-4">Key GDPR Principles</h3>
+  //       <div className="bg-primary/5 p-4 rounded-lg space-y-2">
+  //         <p>
+  //           <strong>Transparency:</strong> Companies must clearly explain what data they&apos;re
+  //           collecting and why.
+  //         </p>
+  //         <p>
+  //           <strong>Consent:</strong> Organizations need your permission before collecting your
+  //           data.
+  //         </p>
+  //         <p>
+  //           <strong>Data Minimization:</strong> Companies should only collect data they genuinely
+  //           need.
+  //         </p>
+  //         <p>
+  //           <strong>Right to Access:</strong> You can request to see all data a company has about
+  //           you.
+  //         </p>
+  //         <p>
+  //           <strong>Right to Be Forgotten:</strong> You can request deletion of your personal data.
+  //         </p>
+  //         <p>
+  //           <strong>Data Portability:</strong> You can transfer your data between services.
+  //         </p>
+  //       </div>
 
-        <h3 className="font-bold mt-4">Why It Matters</h3>
-        <p>
-          GDPR has influenced data practices globally with penalties up to €20 million or 4% of
-          global annual revenue, motivating organizations to take data protection seriously.
-        </p>
+  //       <h3 className="font-bold mt-4">Why It Matters</h3>
+  //       <p>
+  //         GDPR has influenced data practices globally with penalties up to €20 million or 4% of
+  //         global annual revenue, motivating organizations to take data protection seriously.
+  //       </p>
 
-        <h3 className="font-bold mt-4">GDPR and Blockchain</h3>
-        <p>
-          Blockchain technology and GDPR present challenges, as blockchains are designed to be
-          permanent while GDPR grants the right to data erasure. Zero-knowledge proofs offer a
-          potential solution by allowing transaction verification without revealing underlying data.
-        </p>
-      </div>
-    ),
-  },
+  //       <h3 className="font-bold mt-4">GDPR and Blockchain</h3>
+  //       <p>
+  //         Blockchain technology and GDPR present challenges, as blockchains are designed to be
+  //         permanent while GDPR grants the right to data erasure. Zero-knowledge proofs offer a
+  //         potential solution by allowing transaction verification without revealing underlying data.
+  //       </p>
+  //     </div>
+  //   ),
+  // },
   constitutional: {
     title: 'Constitutional Right to Privacy',
     icon: <BookOpen className="w-5 h-5 mr-2 text-primary" />,

@@ -118,7 +118,7 @@ export default function Home() {
   const [transactionHashes, setTransactionHashes] = useState<Transaction[]>([])
 
   const [isPrivacyContentModalOpen, setIsPrivacyContentModalOpen] = useState(false)
-  const [privacyContentType, setPrivacyContentType] = useState<PrivacyContentType>('gdpr')
+  const [privacyContentType, setPrivacyContentType] = useState<PrivacyContentType>('constitutional')
   const [fromBlock, setFromBlock] = useState<number | null>(null)
 
   useEffect(() => {
@@ -292,7 +292,7 @@ export default function Home() {
   }, [isDialogOpen, modalCases])
 
   const handleRevealClick = () => {
-    const isPrivacyContent = Math.random() < 0.4
+    const isPrivacyContent = Math.random() < 0.2
 
     if (isPrivacyContent) {
       const randomIndex = Math.floor(Math.random() * PRIVACY_LINKS.length)
