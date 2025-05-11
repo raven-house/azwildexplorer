@@ -292,7 +292,9 @@ export default function Home() {
   }, [isDialogOpen, modalCases])
 
   const handleRevealClick = () => {
-    const isPrivacyContent = Math.random() < 0.2
+    const isPrivacyContent = false
+    // TODO: Use below code if we want to show privacy content (Information details)
+    // const isPrivacyContent = Math.random() < 0.2
 
     if (isPrivacyContent) {
       const randomIndex = Math.floor(Math.random() * PRIVACY_LINKS.length)
