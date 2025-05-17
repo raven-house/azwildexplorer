@@ -2,7 +2,9 @@
 
 A zero-knowledge blockchain explorer where... something happens? This playful take on a privacy-focused blockchain explorer demonstrates the fundamental concept of transaction privacy in zero-knowledge networks.
 
-![SomethingHappened Logo](https://www.somethinghappened.wtf/logo.png)
+<p align="center">
+    <img src="https://somethinghappened.wtf/logo.png" alt="SomethingHappened Logo" width="150" />
+</p>
 
 ## Overview
 
