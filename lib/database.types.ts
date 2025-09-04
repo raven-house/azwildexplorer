@@ -7,6 +7,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "12.0.2 (a4e00ff)"
+  }
   public: {
     Tables: {
       aztec_discord_server_collections: {
@@ -65,82 +70,125 @@ export type Database = {
       aztec_nft_collections: {
         Row: {
           banner_url: string | null
+          base_image_url: string | null
           collection_id: string
+          collection_type: string | null
           contract_address: string | null
           created_at: string | null
           creator_address: string
-          description: string | null
+          description: string
+          environment: string | null
           floor_price: number | null
           id: string
           image_url: string | null
+          is_featured: boolean
           is_mint_public: boolean
+          launch_date: string | null
           max_supply: number
           mint_limit_per_wallet: number | null
           mint_price: number
-          mint_start_date: string | null
+          mint_start_date: number | null
           name: string
           owner_count: number | null
+          public_keys: string | null
+          rh_public_duration: number | null
+          rh_whitelist_duration: number | null
           royalty_fee: number | null
+          salt: string | null
+          socials: Json
           symbol: string
           total_volume: number | null
           trait_schema: Json | null
           updated_at: string | null
+          voucher_amount: number | null
+          whitelist_mint_price: number | null
+          whitelist_mint_start_date: number | null
+          whitelisted_addresses: Json | null
         }
         Insert: {
           banner_url?: string | null
+          base_image_url?: string | null
           collection_id?: string
+          collection_type?: string | null
           contract_address?: string | null
           created_at?: string | null
           creator_address: string
-          description?: string | null
+          description: string
+          environment?: string | null
           floor_price?: number | null
           id?: string
           image_url?: string | null
+          is_featured?: boolean
           is_mint_public?: boolean
+          launch_date?: string | null
           max_supply: number
           mint_limit_per_wallet?: number | null
           mint_price: number
-          mint_start_date?: string | null
+          mint_start_date?: number | null
           name: string
           owner_count?: number | null
+          public_keys?: string | null
+          rh_public_duration?: number | null
+          rh_whitelist_duration?: number | null
           royalty_fee?: number | null
+          salt?: string | null
+          socials?: Json
           symbol: string
           total_volume?: number | null
           trait_schema?: Json | null
           updated_at?: string | null
+          voucher_amount?: number | null
+          whitelist_mint_price?: number | null
+          whitelist_mint_start_date?: number | null
+          whitelisted_addresses?: Json | null
         }
         Update: {
           banner_url?: string | null
+          base_image_url?: string | null
           collection_id?: string
+          collection_type?: string | null
           contract_address?: string | null
           created_at?: string | null
           creator_address?: string
-          description?: string | null
+          description?: string
+          environment?: string | null
           floor_price?: number | null
           id?: string
           image_url?: string | null
+          is_featured?: boolean
           is_mint_public?: boolean
+          launch_date?: string | null
           max_supply?: number
           mint_limit_per_wallet?: number | null
           mint_price?: number
-          mint_start_date?: string | null
+          mint_start_date?: number | null
           name?: string
           owner_count?: number | null
+          public_keys?: string | null
+          rh_public_duration?: number | null
+          rh_whitelist_duration?: number | null
           royalty_fee?: number | null
+          salt?: string | null
+          socials?: Json
           symbol?: string
           total_volume?: number | null
           trait_schema?: Json | null
           updated_at?: string | null
+          voucher_amount?: number | null
+          whitelist_mint_price?: number | null
+          whitelist_mint_start_date?: number | null
+          whitelisted_addresses?: Json | null
         }
         Relationships: []
       }
       aztec_nfts: {
         Row: {
+          claim_txn_hash: string | null
           collection_id: string
           created_at: string | null
           current_price: number | null
           description: string | null
-          id: string
+          id: number
           image_url: string
           is_listed: boolean | null
           last_sale_date: string | null
@@ -155,11 +203,12 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          claim_txn_hash?: string | null
           collection_id: string
           created_at?: string | null
           current_price?: number | null
           description?: string | null
-          id?: string
+          id?: never
           image_url: string
           is_listed?: boolean | null
           last_sale_date?: string | null
@@ -174,11 +223,12 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          claim_txn_hash?: string | null
           collection_id?: string
           created_at?: string | null
           current_price?: number | null
           description?: string | null
-          id?: string
+          id?: never
           image_url?: string
           is_listed?: boolean | null
           last_sale_date?: string | null
@@ -205,6 +255,7 @@ export type Database = {
       aztec_transactions: {
         Row: {
           age: string
+          block_height: string | null
           created_at: string
           id: number
           txn_hash: string
@@ -213,6 +264,7 @@ export type Database = {
         }
         Insert: {
           age: string
+          block_height?: string | null
           created_at?: string
           id?: number
           txn_hash: string
@@ -221,6 +273,7 @@ export type Database = {
         }
         Update: {
           age?: string
+          block_height?: string | null
           created_at?: string
           id?: number
           txn_hash?: string
@@ -646,24 +699,465 @@ export type Database = {
           },
         ]
       }
-      signup_emails: {
+      rh_nft_upload_tasks: {
         Row: {
-          created_at: string
-          email: string
+          collection_id: string
+          created_at: string | null
+          file_path: string | null
           id: string
-          name: string
+          public_url: string | null
+          status: string | null
+          updated_at: string | null
         }
         Insert: {
-          created_at?: string
-          email: string
+          collection_id: string
+          created_at?: string | null
+          file_path?: string | null
           id?: string
-          name: string
+          public_url?: string | null
+          status?: string | null
+          updated_at?: string | null
         }
         Update: {
+          collection_id?: string
+          created_at?: string | null
+          file_path?: string | null
+          id?: string
+          public_url?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rh_nft_upload_tasks_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "aztec_nft_collections"
+            referencedColumns: ["collection_id"]
+          },
+        ]
+      }
+      rh_rewards_activity: {
+        Row: {
+          completed_at: string | null
+          id: string
+          metadata: Json | null
+          mission_type: string
+          points_earned: number
+          transaction_hash: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          id?: string
+          metadata?: Json | null
+          mission_type: string
+          points_earned: number
+          transaction_hash?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          id?: string
+          metadata?: Json | null
+          mission_type?: string
+          points_earned?: number
+          transaction_hash?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_rh_rewards_activity_user_id"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "rh_rewards_leaderboard"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "fk_rh_rewards_activity_user_id"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "rh_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rh_social_connections: {
+        Row: {
+          connected_at: string | null
+          id: string
+          platform: string
+          platform_avatar_url: string | null
+          platform_user_id: string
+          platform_username: string
+          user_id: string | null
+        }
+        Insert: {
+          connected_at?: string | null
+          id?: string
+          platform: string
+          platform_avatar_url?: string | null
+          platform_user_id: string
+          platform_username: string
+          user_id?: string | null
+        }
+        Update: {
+          connected_at?: string | null
+          id?: string
+          platform?: string
+          platform_avatar_url?: string | null
+          platform_user_id?: string
+          platform_username?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rh_social_connections_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "rh_rewards_leaderboard"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "rh_social_connections_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "rh_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rh_users: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          id: string
+          lifetime_points: number | null
+          rewards_tier: string | null
+          rewards_updated_at: string | null
+          total_points: number | null
+          username: string | null
+          wallet_addresses: string[] | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          id?: string
+          lifetime_points?: number | null
+          rewards_tier?: string | null
+          rewards_updated_at?: string | null
+          total_points?: number | null
+          username?: string | null
+          wallet_addresses?: string[] | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          id?: string
+          lifetime_points?: number | null
+          rewards_tier?: string | null
+          rewards_updated_at?: string | null
+          total_points?: number | null
+          username?: string | null
+          wallet_addresses?: string[] | null
+        }
+        Relationships: []
+      }
+      rh_whitelist_addresses: {
+        Row: {
+          address: string
+          collection_id: string | null
+          created_at: string | null
+          id: string
+          indices: string[]
+          is_active: boolean | null
+          root: string
+          siblings: string[]
+        }
+        Insert: {
+          address: string
+          collection_id?: string | null
+          created_at?: string | null
+          id?: string
+          indices: string[]
+          is_active?: boolean | null
+          root: string
+          siblings: string[]
+        }
+        Update: {
+          address?: string
+          collection_id?: string | null
+          created_at?: string | null
+          id?: string
+          indices?: string[]
+          is_active?: boolean | null
+          root?: string
+          siblings?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rh_whitelist_addresses_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "aztec_nft_collections"
+            referencedColumns: ["collection_id"]
+          },
+        ]
+      }
+      signup_emails: {
+        Row: {
+          access_grant_email_sent: boolean | null
+          created_at: string
+          description: string | null
+          discord_username: string | null
+          email: string
+          email_sent_at: string | null
+          id: string
+          is_approved: boolean | null
+          is_call_schedule_email_send: boolean | null
+          is_email_sent: boolean | null
+          is_priority: boolean | null
+          name: string
+          twitter_username: string | null
+          type: string | null
+          wallet_address: string | null
+        }
+        Insert: {
+          access_grant_email_sent?: boolean | null
           created_at?: string
+          description?: string | null
+          discord_username?: string | null
+          email: string
+          email_sent_at?: string | null
+          id?: string
+          is_approved?: boolean | null
+          is_call_schedule_email_send?: boolean | null
+          is_email_sent?: boolean | null
+          is_priority?: boolean | null
+          name: string
+          twitter_username?: string | null
+          type?: string | null
+          wallet_address?: string | null
+        }
+        Update: {
+          access_grant_email_sent?: boolean | null
+          created_at?: string
+          description?: string | null
+          discord_username?: string | null
           email?: string
+          email_sent_at?: string | null
+          id?: string
+          is_approved?: boolean | null
+          is_call_schedule_email_send?: boolean | null
+          is_email_sent?: boolean | null
+          is_priority?: boolean | null
+          name?: string
+          twitter_username?: string | null
+          type?: string | null
+          wallet_address?: string | null
+        }
+        Relationships: []
+      }
+      ss_agents: {
+        Row: {
+          agent_id: number
+          agent_name: string
+          agent_profile: string | null
+          created_at: string | null
+          digest: string | null
+          is_featured: boolean
+          object_id: string
+          owner: string
+        }
+        Insert: {
+          agent_id: number
+          agent_name: string
+          agent_profile?: string | null
+          created_at?: string | null
+          digest?: string | null
+          is_featured?: boolean
+          object_id: string
+          owner: string
+        }
+        Update: {
+          agent_id?: number
+          agent_name?: string
+          agent_profile?: string | null
+          created_at?: string | null
+          digest?: string | null
+          is_featured?: boolean
+          object_id?: string
+          owner?: string
+        }
+        Relationships: []
+      }
+      ss_feature_requests: {
+        Row: {
+          agent_id: number
+          created_at: string | null
+          description: string
+          email_id: string
+          id: string
+          name: string
+          telegram_username: string | null
+          twitter_username: string | null
+          wallet_address: string
+        }
+        Insert: {
+          agent_id: number
+          created_at?: string | null
+          description: string
+          email_id: string
+          id?: string
+          name: string
+          telegram_username?: string | null
+          twitter_username?: string | null
+          wallet_address: string
+        }
+        Update: {
+          agent_id?: number
+          created_at?: string | null
+          description?: string
+          email_id?: string
           id?: string
           name?: string
+          telegram_username?: string | null
+          twitter_username?: string | null
+          wallet_address?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ss_feature_requests_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "ss_agents"
+            referencedColumns: ["agent_id"]
+          },
+        ]
+      }
+      ss_rewards_activity: {
+        Row: {
+          completed_at: string | null
+          id: string
+          metadata: Json | null
+          mission_type: string
+          points_earned: number
+          transaction_hash: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          id?: string
+          metadata?: Json | null
+          mission_type: string
+          points_earned: number
+          transaction_hash?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          id?: string
+          metadata?: Json | null
+          mission_type?: string
+          points_earned?: number
+          transaction_hash?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ss_rewards_activity_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "ss_rewards_leaderboard"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "ss_rewards_activity_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "ss_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ss_social_connections: {
+        Row: {
+          connected_at: string | null
+          id: string
+          platform: string
+          platform_avatar_url: string | null
+          platform_user_id: string
+          platform_username: string
+          user_id: string | null
+        }
+        Insert: {
+          connected_at?: string | null
+          id?: string
+          platform: string
+          platform_avatar_url?: string | null
+          platform_user_id: string
+          platform_username: string
+          user_id?: string | null
+        }
+        Update: {
+          connected_at?: string | null
+          id?: string
+          platform?: string
+          platform_avatar_url?: string | null
+          platform_user_id?: string
+          platform_username?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ss_social_connections_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "ss_rewards_leaderboard"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "ss_social_connections_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "ss_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ss_users: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          id: string
+          lifetime_points: number | null
+          rewards_tier: string | null
+          rewards_updated_at: string | null
+          total_points: number | null
+          username: string | null
+          wallet_addresses: string[] | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          id?: string
+          lifetime_points?: number | null
+          rewards_tier?: string | null
+          rewards_updated_at?: string | null
+          total_points?: number | null
+          username?: string | null
+          wallet_addresses?: string[] | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          id?: string
+          lifetime_points?: number | null
+          rewards_tier?: string | null
+          rewards_updated_at?: string | null
+          total_points?: number | null
+          username?: string | null
+          wallet_addresses?: string[] | null
         }
         Relationships: []
       }
@@ -826,30 +1320,6 @@ export type Database = {
         }
         Relationships: []
       }
-      umbra_signup_emails: {
-        Row: {
-          created_at: string
-          email: string | null
-          id: number
-          message: string | null
-          name: string | null
-        }
-        Insert: {
-          created_at?: string
-          email?: string | null
-          id?: number
-          message?: string | null
-          name?: string | null
-        }
-        Update: {
-          created_at?: string
-          email?: string | null
-          id?: number
-          message?: string | null
-          name?: string | null
-        }
-        Relationships: []
-      }
       voucher_codes: {
         Row: {
           code: string
@@ -883,72 +1353,30 @@ export type Database = {
         }
         Relationships: []
       }
-      zeko_mint_requests: {
+      wallet_sessions: {
         Row: {
           created_at: string | null
+          expires_at: string
+          fingerprint: string
           id: string
-          nft_id: number
-          nft_name: string
-          status: string | null
+          token: string
           wallet_address: string
         }
         Insert: {
           created_at?: string | null
+          expires_at: string
+          fingerprint: string
           id?: string
-          nft_id: number
-          nft_name: string
-          status?: string | null
+          token: string
           wallet_address: string
         }
         Update: {
           created_at?: string | null
+          expires_at?: string
+          fingerprint?: string
           id?: string
-          nft_id?: number
-          nft_name?: string
-          status?: string | null
+          token?: string
           wallet_address?: string
-        }
-        Relationships: []
-      }
-      zeko_nfts: {
-        Row: {
-          created_at: string
-          id: number
-          img_url: string
-          is_minted: boolean
-          is_public_mint: boolean
-          name: string
-          nft_id: number | null
-          owner_address: string | null
-          price: number
-          traits: Json | null
-          txn_hash: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          img_url: string
-          is_minted?: boolean
-          is_public_mint?: boolean
-          name: string
-          nft_id?: number | null
-          owner_address?: string | null
-          price: number
-          traits?: Json | null
-          txn_hash?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          img_url?: string
-          is_minted?: boolean
-          is_public_mint?: boolean
-          name?: string
-          nft_id?: number | null
-          owner_address?: string | null
-          price?: number
-          traits?: Json | null
-          txn_hash?: string | null
         }
         Relationships: []
       }
@@ -993,12 +1421,51 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      rh_rewards_leaderboard: {
+        Row: {
+          avatar_url: string | null
+          discord_avatar: string | null
+          discord_user_id: string | null
+          discord_username: string | null
+          lifetime_points: number | null
+          rank: number | null
+          tier: string | null
+          total_points: number | null
+          twitter_avatar: string | null
+          twitter_user_id: string | null
+          twitter_username: string | null
+          user_id: string | null
+          username: string | null
+        }
+        Relationships: []
+      }
+      ss_rewards_leaderboard: {
+        Row: {
+          avatar_url: string | null
+          discord_avatar: string | null
+          discord_user_id: string | null
+          discord_username: string | null
+          lifetime_points: number | null
+          rank: number | null
+          tier: string | null
+          total_points: number | null
+          twitter_avatar: string | null
+          twitter_user_id: string | null
+          twitter_username: string | null
+          user_id: string | null
+          username: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       increment_nonce_counter: {
         Args: { wallet_addr: string }
         Returns: number
+      }
+      increment_user_points: {
+        Args: { points_to_add: number; user_id: string }
+        Returns: undefined
       }
     }
     Enums: {
@@ -1017,21 +1484,25 @@ export type Database = {
   }
 }
 
-type DefaultSchema = Database[Extract<keyof Database, "public">]
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
@@ -1049,14 +1520,16 @@ export type Tables<
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
@@ -1072,14 +1545,16 @@ export type TablesInsert<
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
@@ -1095,14 +1570,16 @@ export type TablesUpdate<
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
@@ -1110,14 +1587,16 @@ export type Enums<
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
-> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
