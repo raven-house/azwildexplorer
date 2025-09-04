@@ -52,6 +52,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const allTransactions: Transaction[] = []
+    const seenTxnHashes = new Set<string>()
     let currentToBlock = tillBlock
     let currentFromBlock = Math.max(0, currentToBlock - 5)
     let finalFromBlock = currentFromBlock
@@ -73,13 +74,16 @@ export async function GET(req: NextRequest) {
         const blockTimestamp = block.header.globalVariables.timestamp
 
         block.body.txEffects.forEach((tx) => {
-          allTransactions.push({
-            txnHash: tx.txHash,
-            txnStatus: 'CONFIRMED',
-            txnType: getRandomTxnType(),
-            age: calculateAge(blockTimestamp),
-            blockHeight: block.height,
-          })
+          if (!seenTxnHashes.has(tx.txHash)) {
+            allTransactions.push({
+              txnHash: tx.txHash,
+              txnStatus: 'CONFIRMED',
+              txnType: getRandomTxnType(),
+              age: calculateAge(blockTimestamp),
+              blockHeight: block.height,
+            })
+            seenTxnHashes.add(tx.txHash)
+          }
         })
       })
 
