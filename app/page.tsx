@@ -137,12 +137,24 @@ export default function Home() {
       const response = await fetch(`/api/blocks?till_block=${fromBlock ?? 0}`)
 
       if (response.ok) {
-        const { transactions, finalFormBlock } = (await response.json()) || {}
+        const { transactions: newTransactions, finalFormBlock } = (await response.json()) || {}
 
         // Only update if we got data
-        if (transactions && transactions.length > 0) {
+        if (newTransactions && newTransactions.length > 0) {
           setFromBlock(finalFormBlock)
-          setTransactions(transactions)
+
+          setTransactions((prevTransactions) => {
+            const existingHashes = new Set(prevTransactions.map((txn) => txn.txnHash))
+
+            const uniqueNewTransactions = newTransactions.filter(
+              (txn: TxnData) => !existingHashes.has(txn.txnHash)
+            )
+
+            const updatedTransactions = [...uniqueNewTransactions, ...prevTransactions]
+
+            return updatedTransactions.slice(0, 50)
+          })
+
           setCounter((prev) => prev + 1) // Increment counter to trigger highlight animation
         }
       } else {
