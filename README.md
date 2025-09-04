@@ -121,3 +121,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [Satyam Bansal](https://github.com/satyambnsal) for building this project
 
 Built with ❤️ and a sense of humor about privacy. Remember, just because you can't see it doesn't mean it isn't there!
+
